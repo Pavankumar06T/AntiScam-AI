@@ -48,10 +48,14 @@ Orchestrated with **LangGraph**. Four agents:
 
 | Agent | Role | Status |
 |---|---|---|
-| **Scam Pattern Detection** | Scores risk from language & dialogue dynamics | ✅ Phase 1 |
-| **Fraud Network Graph** | Links entities across sessions (NetworkX) | Phase 2 |
-| **Advisory (RAG)** | Regulation-backed warning, EN/HI/TA (ChromaDB) | Phase 2 |
-| **Evidence & Reporting** | Structured complaint packet | Phase 2 |
+| **Scam Pattern Detection** | Scores risk from language & dialogue dynamics | ✅ Verified |
+| **Fraud Network Graph** | Links entities across sessions (NetworkX) | ✅ Verified |
+| **Advisory (RAG)** | Regulation-backed warning, EN/HI/TA (ChromaDB) | ✅ Verified |
+| **Evidence & Reporting** | Structured complaint packet | ✅ Verified |
+
+Routing is conditional, not "run everything": most monitored calls are ordinary,
+and the graph/advisory/reporting agents only carry meaning once risk is real.
+A benign call costs one detection and stops.
 
 ### The Detection Agent is two layers, fused
 
@@ -68,17 +72,39 @@ non-negotiable signals. This is not redundancy for its own sake — it buys
 and **graceful degradation**: with Groq's quota fully exhausted, a real digital-arrest
 transcript still scored **94/100 in 467ms** and correctly extracted the mule account.
 
+### Cross-victim intelligence, concretely
+
+The fraud graph is bipartite: sessions link to the identifiers seen in them, so two
+sessions sharing an identifier sit at distance 2 and a connected component *is* a
+fraud operation. Running a live call that quotes a known mule account produces:
+
+```
+REPEAT SCAMMER. The bank account 50100294471882 in this call has already been
+recorded against 2 other victims. Through other shared identifiers, this caller
+is linked to 3 victims in total.
+```
+
+We link **only** on identifiers that actually implicate a shared operator — phone,
+UPI, account, case number, URL. Never on "CBI" or "Inspector Sharma": thousands of
+unrelated scammers claim both, and linking on those would collapse the dataset into
+one meaningless cluster and name innocent people. That guard is enforced by tests.
+
 ## Status
 
 | Phase | Scope | Status |
 |---|---|---|
 | **1** | Detection Agent, `/api/classify`, dataset generator, tests | ✅ Verified |
-| **2** | LangGraph orchestration, fraud graph, RAG advisory, reporting | Next |
-| **3** | React dashboard: live session monitor + fraud network view | Planned |
+| **2** | LangGraph orchestration, fraud graph, RAG advisory, reporting | ✅ Verified |
+| **3** | React dashboard: live session monitor + fraud network view | Next |
 | **4** | Metrics (precision/recall/F1/lead time), deployment | Planned |
 
-**Verified in Phase 1:** 43 tests passing · detection latency **1.8–2.5s** ·
-obvious scam → 98, obvious legitimate → 6.
+**Verified:** 84 offline tests passing · detection latency **1.8–2.5s** ·
+obvious scam → 98, obvious legitimate → 6 · full pipeline
+(`detect → graph → advisory → report`) runs end-to-end.
+
+**Outstanding:** the 60-transcript synthetic dataset is generated but blocked on
+Groq quota (needs ~150k tokens against a 100k/day free-tier cap). The generator is
+verified working on a real sample.
 
 ## Quick start
 

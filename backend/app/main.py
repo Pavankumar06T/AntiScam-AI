@@ -12,8 +12,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.agents.fraud_graph import get_graph
+from app.agents.graph_seed import seed_graph
 from app.config import get_settings
 from app.routers import classify as classify_router
+from app.routers import session as session_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -33,6 +36,12 @@ async def lifespan(_: FastAPI):
         )
     else:
         logger.info("Groq configured. Detection Agent ready.")
+
+    # Seed prior sessions so the fraud graph has history to match against.
+    # Without this the cross-victim lookup has nothing to find and the graph
+    # agent looks broken rather than empty.
+    seeded = seed_graph(get_graph(), reset=True)
+    logger.info("Fraud graph seeded with %d prior sessions.", seeded)
     yield
 
 
@@ -74,6 +83,7 @@ async def log_requests(request: Request, call_next):
 
 
 app.include_router(classify_router.router)
+app.include_router(session_router.router)
 
 
 @app.get("/", include_in_schema=False)

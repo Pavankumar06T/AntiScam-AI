@@ -242,6 +242,45 @@ def _fuse(rule_score: int, llm_score: int) -> int:
     return _clamp_int(fused, 0, 100, llm_score)
 
 
+def _rule_red_flags(turns) -> list[RedFlag]:
+    """Build red flags from tripwires, quoting each turn's own text.
+
+    Two problems this solves, both visible in the generated complaint before it
+    existed:
+
+    1. The scorer runs over the flattened transcript ("[00:12] caller: ..."), so
+       quoting its match window embedded timestamps and speaker labels inside the
+       evidence quote. Re-matching per turn yields a clean verbatim quote and an
+       exact turn attribution instead of a fuzzy text search.
+    2. Several patterns share a category (law_enforcement_claim and agency_selfid
+       are both authority_impersonation). Emitting one flag per *pattern* produced
+       near-duplicate evidence items. We keep the strongest pattern per category
+       per turn.
+    """
+    flags: list[RedFlag] = []
+
+    for turn in turns:
+        best_by_category: dict[RedFlagCategory, tuple[int, RedFlag]] = {}
+
+        for signal in rules.find_signals(turn.text):
+            pattern = rules.PATTERN_BY_LABEL[signal.pattern_label]
+            candidate = RedFlag(
+                category=signal.category,
+                severity=pattern.severity,
+                quote=turn.text.strip()[:400],
+                explanation=pattern.explanation,
+                turn_index=turn.turn_index,
+                timestamp=turn.timestamp,
+            )
+            existing = best_by_category.get(signal.category)
+            if existing is None or signal.weight > existing[0]:
+                best_by_category[signal.category] = (signal.weight, candidate)
+
+        flags.extend(flag for _, flag in best_by_category.values())
+
+    return flags
+
+
 def _rule_only_response(
     request: ClassifyRequest,
     rule_score: int,
@@ -253,20 +292,7 @@ def _rule_only_response(
     reason: str,
 ) -> ClassifyResponse:
     """Degraded-mode result built purely from tripwires."""
-    red_flags: list[RedFlag] = []
-    for signal in signals:
-        pattern = rules.PATTERN_BY_LABEL[signal.pattern_label]
-        turn_index, timestamp = _locate_quote(signal.quote.strip("…"), turns)
-        red_flags.append(
-            RedFlag(
-                category=signal.category,
-                severity=pattern.severity,
-                quote=signal.quote[:400],
-                explanation=pattern.explanation,
-                turn_index=turn_index,
-                timestamp=timestamp,
-            )
-        )
+    red_flags = _rule_red_flags(turns)
 
     scam_type = ScamType.NONE
     if rule_score >= 30:
