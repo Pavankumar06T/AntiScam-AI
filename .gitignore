@@ -1,0 +1,27 @@
+# Secrets — never commit these
+.env
+.env.local
+*.pem
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Vector store (Phase 2)
+chroma_db/
+
+# Node / frontend (Phase 3)
+node_modules/
+dist/
+.vite/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
