@@ -1,0 +1,197 @@
+{
+  "metrics": {
+    "threshold": 50,
+    "counts": {
+      "tp": 4,
+      "fp": 0,
+      "tn": 8,
+      "fn": 4,
+      "total": 16
+    },
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1": 0.667,
+    "false_positive_rate": 0.0,
+    "accuracy": 0.75,
+    "recall_by_scam_type": {
+      "digital_arrest": 1.0,
+      "investment_fraud": 0.0,
+      "job_scam": 0.0,
+      "kyc_fraud": 1.0,
+      "loan_fraud": 0.0,
+      "lottery_prize": 0.0,
+      "tech_support": 1.0
+    },
+    "hard_negative_fpr": 0.0,
+    "hard_negative_count": 5,
+    "mean_score_scam": 57.0,
+    "mean_score_legit": 14.6,
+    "degraded_samples": 16,
+    "evaluated_at_unix": 1784304564,
+    "wall_seconds": 0.0,
+    "model": "hand-authored",
+    "degraded_mode": true
+  },
+  "per_sample": [
+    {
+      "id": "scam_digital_arrest_01",
+      "true_label": "scam",
+      "true_scam_type": "digital_arrest",
+      "is_hard_negative": false,
+      "score": 93,
+      "pred_scam_type": "digital_arrest",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "scam_digital_arrest_02",
+      "true_label": "scam",
+      "true_scam_type": "digital_arrest",
+      "is_hard_negative": false,
+      "score": 83,
+      "pred_scam_type": "digital_arrest",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "scam_kyc_fraud_01",
+      "true_label": "scam",
+      "true_scam_type": "kyc_fraud",
+      "is_hard_negative": false,
+      "score": 69,
+      "pred_scam_type": "tech_support",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "scam_lottery_prize_01",
+      "true_label": "scam",
+      "true_scam_type": "lottery_prize",
+      "is_hard_negative": false,
+      "score": 37,
+      "pred_scam_type": "lottery_prize",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "scam_loan_fraud_01",
+      "true_label": "scam",
+      "true_scam_type": "loan_fraud",
+      "is_hard_negative": false,
+      "score": 28,
+      "pred_scam_type": "none",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "scam_job_scam_01",
+      "true_label": "scam",
+      "true_scam_type": "job_scam",
+      "is_hard_negative": false,
+      "score": 41,
+      "pred_scam_type": "other_scam",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "scam_investment_fraud_01",
+      "true_label": "scam",
+      "true_scam_type": "investment_fraud",
+      "is_hard_negative": false,
+      "score": 37,
+      "pred_scam_type": "lottery_prize",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "scam_tech_support_01",
+      "true_label": "scam",
+      "true_scam_type": "tech_support",
+      "is_hard_negative": false,
+      "score": 68,
+      "pred_scam_type": "tech_support",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_bank_fraud_alert_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": true,
+      "score": 39,
+      "pred_scam_type": "other_scam",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_delivery_otp_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": true,
+      "score": 39,
+      "pred_scam_type": "other_scam",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_collections_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": true,
+      "score": 0,
+      "pred_scam_type": "none",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_recruiter_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": true,
+      "score": 0,
+      "pred_scam_type": "none",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_customer_support_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": false,
+      "score": 0,
+      "pred_scam_type": "none",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_everyday_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": false,
+      "score": 0,
+      "pred_scam_type": "none",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_bank_branch_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": true,
+      "score": 39,
+      "pred_scam_type": "other_scam",
+      "degraded": true,
+      "latency_ms": 0
+    },
+    {
+      "id": "legit_insurance_renewal_01",
+      "true_label": "legitimate",
+      "true_scam_type": "none",
+      "is_hard_negative": false,
+      "score": 0,
+      "pred_scam_type": "none",
+      "degraded": true,
+      "latency_ms": 0
+    }
+  ]
+}

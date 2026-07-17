@@ -1,0 +1,553 @@
+{
+  "meta": {
+    "description": "Hand-curated labeled conversation transcripts for AntiScam AI benchmarking. Human-authored for trustworthy labels and full reproducibility with no API key. Illustrative, not real call data.",
+    "generated_by_model": "hand-authored",
+    "counts": {
+      "total": 16,
+      "scam": 8,
+      "legitimate": 8,
+      "hard_negatives": 5
+    },
+    "scam_types": [
+      "digital_arrest",
+      "investment_fraud",
+      "job_scam",
+      "kyc_fraud",
+      "loan_fraud",
+      "lottery_prize",
+      "tech_support"
+    ]
+  },
+  "records": [
+    {
+      "id": "scam_digital_arrest_01",
+      "label": "scam",
+      "scam_type": "digital_arrest",
+      "category": "digital_arrest",
+      "is_hard_negative": false,
+      "title": "CBI parcel / NDPS digital arrest",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Am I speaking with Rajesh Kumar? This is Inspector Vikram Rathore from CBI Mumbai, badge 4471.",
+          "timestamp": "00:04"
+        },
+        {
+          "speaker": "user",
+          "text": "Yes. What is this about?",
+          "timestamp": "00:10"
+        },
+        {
+          "speaker": "caller",
+          "text": "A parcel in your name to Taiwan was seized. It contained 400 grams of MDMA and fake passports. FIR MUM/CBI/2024/8871 is registered against you under the NDPS Act.",
+          "timestamp": "00:26"
+        },
+        {
+          "speaker": "user",
+          "text": "I never sent any parcel!",
+          "timestamp": "00:33"
+        },
+        {
+          "speaker": "caller",
+          "text": "Your Aadhaar was used, this is money laundering. You are under digital arrest. Do not disconnect this video call and do not inform your family.",
+          "timestamp": "00:49"
+        },
+        {
+          "speaker": "caller",
+          "text": "To prove your funds are clean, transfer your balance to RBI verification account 50100294471882. It refunds in two hours, or a non-bailable warrant issues tonight.",
+          "timestamp": "01:12"
+        }
+      ]
+    },
+    {
+      "id": "scam_digital_arrest_02",
+      "label": "scam",
+      "scam_type": "digital_arrest",
+      "category": "digital_arrest",
+      "is_hard_negative": false,
+      "title": "TRAI-to-cybercrime SIM misuse",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "This is the Telecom Regulatory Authority. Your number will be deactivated in two hours for illegal activity.",
+          "timestamp": "00:03"
+        },
+        {
+          "speaker": "user",
+          "text": "Why? I paid my bill.",
+          "timestamp": "00:09"
+        },
+        {
+          "speaker": "caller",
+          "text": "Nine complaints of illegal advertising are registered against your SIM in Andheri. I am transferring you to the cyber crime department now.",
+          "timestamp": "00:21"
+        },
+        {
+          "speaker": "caller",
+          "text": "Officer speaking. A money laundering case is open against your Aadhaar. Do not tell anyone. Stay on this call.",
+          "timestamp": "00:38"
+        },
+        {
+          "speaker": "caller",
+          "text": "You must move your savings to a government safe account for verification, account number 39100288812major, immediately.",
+          "timestamp": "00:55"
+        }
+      ]
+    },
+    {
+      "id": "scam_kyc_fraud_01",
+      "label": "scam",
+      "scam_type": "kyc_fraud",
+      "category": "kyc_fraud",
+      "is_hard_negative": false,
+      "title": "KYC-expiry OTP + AnyDesk",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Calling from your bank. Your KYC has expired and the account will be blocked within two hours.",
+          "timestamp": "00:05"
+        },
+        {
+          "speaker": "user",
+          "text": "Oh no, what do I do?",
+          "timestamp": "00:11"
+        },
+        {
+          "speaker": "caller",
+          "text": "Just a quick verification. I am sending an OTP now — please read it out to complete the update.",
+          "timestamp": "00:22"
+        },
+        {
+          "speaker": "user",
+          "text": "It says 4412...",
+          "timestamp": "00:29"
+        },
+        {
+          "speaker": "caller",
+          "text": "Good. Now install AnyDesk from the Play Store so I can complete the re-KYC on your screen.",
+          "timestamp": "00:41"
+        }
+      ]
+    },
+    {
+      "id": "scam_lottery_prize_01",
+      "label": "scam",
+      "scam_type": "lottery_prize",
+      "category": "lottery_prize",
+      "is_hard_negative": false,
+      "title": "KBC lucky draw / GST advance fee",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Congratulations! Your number won 25 lakh in the KBC Lucky Draw!",
+          "timestamp": "00:03"
+        },
+        {
+          "speaker": "user",
+          "text": "But I never entered any draw.",
+          "timestamp": "00:09"
+        },
+        {
+          "speaker": "caller",
+          "text": "It is automatic for all subscribers. Just pay the 5% GST clearance of Rs 12,500 to release the prize.",
+          "timestamp": "00:21"
+        },
+        {
+          "speaker": "caller",
+          "text": "Send it via UPI to kbcclaim2024@ybl and the full amount credits in 24 hours.",
+          "timestamp": "00:33"
+        }
+      ]
+    },
+    {
+      "id": "scam_loan_fraud_01",
+      "label": "scam",
+      "scam_type": "loan_fraud",
+      "category": "loan_fraud",
+      "is_hard_negative": false,
+      "title": "Instant pre-approved loan / processing fee",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Sir, you are pre-approved for a 5 lakh instant loan at 2% interest, no documents needed.",
+          "timestamp": "00:04"
+        },
+        {
+          "speaker": "user",
+          "text": "That sounds very low. What is the catch?",
+          "timestamp": "00:11"
+        },
+        {
+          "speaker": "caller",
+          "text": "No catch. Only a refundable processing fee of Rs 3,500 is required before disbursal. Pay to account 771100294455 and the loan is credited today.",
+          "timestamp": "00:27"
+        },
+        {
+          "speaker": "user",
+          "text": "Why do I pay before getting the loan?",
+          "timestamp": "00:34"
+        },
+        {
+          "speaker": "caller",
+          "text": "It is a security formality, fully refundable with your first EMI. Pay now to lock this offer.",
+          "timestamp": "00:47"
+        }
+      ]
+    },
+    {
+      "id": "scam_job_scam_01",
+      "label": "scam",
+      "scam_type": "job_scam",
+      "category": "job_scam",
+      "is_hard_negative": false,
+      "title": "Work-from-home task job / registration fee",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "We saw your resume. A work-from-home data job pays Rs 3,000 daily, just two hours of tasks.",
+          "timestamp": "00:05"
+        },
+        {
+          "speaker": "user",
+          "text": "That sounds good. How do I start?",
+          "timestamp": "00:12"
+        },
+        {
+          "speaker": "caller",
+          "text": "A one-time registration and training-kit fee of Rs 1,999 is required. Pay to raj.hr@paytm and we activate your account.",
+          "timestamp": "00:26"
+        },
+        {
+          "speaker": "caller",
+          "text": "Slots are filling fast, please pay within the hour to confirm your seat.",
+          "timestamp": "00:37"
+        }
+      ]
+    },
+    {
+      "id": "scam_investment_fraud_01",
+      "label": "scam",
+      "scam_type": "investment_fraud",
+      "category": "investment_fraud",
+      "is_hard_negative": false,
+      "title": "Guaranteed-return trading group",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Join our VIP trading group. Our members double their money every month, guaranteed returns.",
+          "timestamp": "00:04"
+        },
+        {
+          "speaker": "user",
+          "text": "Guaranteed? Really?",
+          "timestamp": "00:09"
+        },
+        {
+          "speaker": "caller",
+          "text": "Yes, our AI algorithm never loses. Deposit Rs 50,000 to start on our platform, link is invest-profit-pro.co.",
+          "timestamp": "00:22"
+        },
+        {
+          "speaker": "caller",
+          "text": "This offer closes tonight. Transfer to UPI winbig.trade@okhdfcbank now to secure your slot.",
+          "timestamp": "00:36"
+        }
+      ]
+    },
+    {
+      "id": "scam_tech_support_01",
+      "label": "scam",
+      "scam_type": "tech_support",
+      "category": "tech_support",
+      "is_hard_negative": false,
+      "title": "Fake tech support / remote access",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "This is Microsoft support. Your computer is sending virus signals and your bank account is at risk.",
+          "timestamp": "00:04"
+        },
+        {
+          "speaker": "user",
+          "text": "Oh! What should I do?",
+          "timestamp": "00:10"
+        },
+        {
+          "speaker": "caller",
+          "text": "Install AnyDesk immediately so I can remove the virus and secure your net banking. Do not turn off the screen.",
+          "timestamp": "00:24"
+        },
+        {
+          "speaker": "caller",
+          "text": "Now open your banking app so I can verify no money was stolen. Read me the OTP if one arrives.",
+          "timestamp": "00:39"
+        }
+      ]
+    },
+    {
+      "id": "legit_bank_fraud_alert_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "bank_fraud_alert",
+      "is_hard_negative": true,
+      "title": "Genuine bank fraud desk — confirm transaction",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Hi, this is Priya from HDFC Bank's fraud monitoring team. Am I speaking with Mr. Anand?",
+          "timestamp": "00:04"
+        },
+        {
+          "speaker": "user",
+          "text": "Yes, speaking.",
+          "timestamp": "00:08"
+        },
+        {
+          "speaker": "caller",
+          "text": "We flagged a Rs 45,000 transaction on your card ending 4412 in Hyderabad ten minutes ago. Can you confirm if this was you?",
+          "timestamp": "00:20"
+        },
+        {
+          "speaker": "user",
+          "text": "No, I am in Pune. That was not me.",
+          "timestamp": "00:27"
+        },
+        {
+          "speaker": "caller",
+          "text": "I am blocking the card now. I will never ask for your OTP, PIN, or password, and no bank employee ever will.",
+          "timestamp": "00:40"
+        },
+        {
+          "speaker": "caller",
+          "text": "Your dispute reference is DSP-88214. To verify this call, please hang up and dial the number on the back of your card.",
+          "timestamp": "00:55"
+        }
+      ]
+    },
+    {
+      "id": "legit_delivery_otp_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "delivery_otp",
+      "is_hard_negative": true,
+      "title": "Genuine courier — delivery OTP for real parcel",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Hello, this is Ravi from Delhivery. I am at your gate with an Amazon parcel.",
+          "timestamp": "00:03"
+        },
+        {
+          "speaker": "user",
+          "text": "Yes, I was expecting it. Coming down.",
+          "timestamp": "00:09"
+        },
+        {
+          "speaker": "caller",
+          "text": "Could you share the delivery OTP that came to your phone so I can mark it delivered?",
+          "timestamp": "00:18"
+        },
+        {
+          "speaker": "user",
+          "text": "Sure, it is 7721.",
+          "timestamp": "00:24"
+        },
+        {
+          "speaker": "caller",
+          "text": "Thank you, delivered. Have a good day!",
+          "timestamp": "00:29"
+        }
+      ]
+    },
+    {
+      "id": "legit_collections_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "collections_reminder",
+      "is_hard_negative": true,
+      "title": "Genuine overdue-EMI reminder",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Good afternoon, this is Sneha from Bajaj Finance about your personal loan EMI.",
+          "timestamp": "00:04"
+        },
+        {
+          "speaker": "user",
+          "text": "Yes, I know it is a few days late.",
+          "timestamp": "00:10"
+        },
+        {
+          "speaker": "caller",
+          "text": "Your EMI of Rs 8,400 was due on the 5th. A late fee applies and it may affect your credit score.",
+          "timestamp": "00:22"
+        },
+        {
+          "speaker": "caller",
+          "text": "You can pay through the Bajaj Finserv app or net banking. Would you like the payment link by SMS?",
+          "timestamp": "00:34"
+        },
+        {
+          "speaker": "user",
+          "text": "Yes please, I will pay today.",
+          "timestamp": "00:40"
+        }
+      ]
+    },
+    {
+      "id": "legit_recruiter_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "recruiter_call",
+      "is_hard_negative": true,
+      "title": "Genuine recruiter — interview scheduling, no fee",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Hi Meera, this is Karan from TCS talent acquisition, about the software role you applied for.",
+          "timestamp": "00:05"
+        },
+        {
+          "speaker": "user",
+          "text": "Yes, hello.",
+          "timestamp": "00:09"
+        },
+        {
+          "speaker": "caller",
+          "text": "We would like to schedule a technical interview. Are you available Thursday at 3pm?",
+          "timestamp": "00:19"
+        },
+        {
+          "speaker": "user",
+          "text": "Thursday works. Is there any fee for the process?",
+          "timestamp": "00:26"
+        },
+        {
+          "speaker": "caller",
+          "text": "No, absolutely not — we never charge candidates. You will get a calendar invite from our official domain shortly.",
+          "timestamp": "00:39"
+        }
+      ]
+    },
+    {
+      "id": "legit_customer_support_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "customer_support",
+      "is_hard_negative": false,
+      "title": "Routine broadband support (user initiated)",
+      "turns": [
+        {
+          "speaker": "user",
+          "text": "Hi, I called because my broadband has been down since morning.",
+          "timestamp": "00:04"
+        },
+        {
+          "speaker": "caller",
+          "text": "Sorry about that. I can see an outage in your area, engineers are on it. It should be back within four hours.",
+          "timestamp": "00:17"
+        },
+        {
+          "speaker": "user",
+          "text": "Okay, will I get a refund for the downtime?",
+          "timestamp": "00:24"
+        },
+        {
+          "speaker": "caller",
+          "text": "Yes, a pro-rated credit will apply automatically to your next bill. Your ticket number is BB-55210.",
+          "timestamp": "00:36"
+        }
+      ]
+    },
+    {
+      "id": "legit_everyday_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "everyday_conversation",
+      "is_hard_negative": false,
+      "title": "Ordinary personal call",
+      "turns": [
+        {
+          "speaker": "user",
+          "text": "Hey, are we still on for dinner on Saturday?",
+          "timestamp": "00:03"
+        },
+        {
+          "speaker": "caller",
+          "text": "Yes! I booked a table at that new place near the lake for 8pm.",
+          "timestamp": "00:10"
+        },
+        {
+          "speaker": "user",
+          "text": "Perfect. Should I pick you up?",
+          "timestamp": "00:15"
+        },
+        {
+          "speaker": "caller",
+          "text": "Sure, around 7:30 works. I will transfer you my share for the last time too.",
+          "timestamp": "00:23"
+        }
+      ]
+    },
+    {
+      "id": "legit_bank_branch_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "customer_support",
+      "is_hard_negative": true,
+      "title": "Genuine branch callback about a form",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Hello, this is Amit from your ICICI home branch. Your cheque book request is ready for pickup.",
+          "timestamp": "00:05"
+        },
+        {
+          "speaker": "user",
+          "text": "Oh good. Do I need to bring anything?",
+          "timestamp": "00:11"
+        },
+        {
+          "speaker": "caller",
+          "text": "Just your ID. We do not need any OTP or online details — please collect it at the branch counter.",
+          "timestamp": "00:23"
+        },
+        {
+          "speaker": "user",
+          "text": "Great, I will come tomorrow.",
+          "timestamp": "00:28"
+        }
+      ]
+    },
+    {
+      "id": "legit_insurance_renewal_01",
+      "label": "legitimate",
+      "scam_type": "none",
+      "category": "customer_support",
+      "is_hard_negative": false,
+      "title": "Insurance renewal reminder",
+      "turns": [
+        {
+          "speaker": "caller",
+          "text": "Hello, this is a reminder from LIC that your policy premium is due next week.",
+          "timestamp": "00:05"
+        },
+        {
+          "speaker": "user",
+          "text": "Thanks. How can I pay?",
+          "timestamp": "00:10"
+        },
+        {
+          "speaker": "caller",
+          "text": "Through the official LIC website, the app, or any branch. Your policy number is on your bond document.",
+          "timestamp": "00:22"
+        },
+        {
+          "speaker": "user",
+          "text": "Alright, I will pay online.",
+          "timestamp": "00:27"
+        }
+      ]
+    }
+  ]
+}
