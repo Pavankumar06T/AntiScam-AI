@@ -190,6 +190,8 @@ PATTERNS: list[Pattern] = [
         Severity.HIGH,
         r"\b(?:processing fee|registration fee|security deposit|clearance (?:fee|charge)|"
         r"gst (?:charge|amount|fee)|customs duty|refundable (?:fee|deposit)|"
+        r"(?:training[- ]?kit|registration|enrol?lment|activation|joining|membership) "
+        r"(?:and [\w-]+ )?fee|one[- ]time fee|"
         r"pay (?:a |the )?(?:small )?(?:fee|amount) (?:to|for) (?:release|claim|process))\b",
         "Advance-fee pattern: pay a small amount now to unlock a larger promised sum.",
     ),
@@ -199,7 +201,8 @@ PATTERNS: list[Pattern] = [
         16,
         Severity.MEDIUM,
         r"\b(?:you have won|lottery|lucky (?:draw|winner)|prize money|"
-        r"guaranteed (?:return|profit|income)|double your (?:money|investment)|"
+        r"guaranteed (?:return|profit|income)s?|"
+        r"double (?:your|their|his|her|the) (?:money|investment|amount)|"
         r"work from home[^.\n]{0,30}\b(?:daily|per day|earn))\b",
         "Reward that is too good to be true — the hook for prize/investment/job scams.",
     ),
