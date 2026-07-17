@@ -95,16 +95,55 @@ one meaningless cluster and name innocent people. That guard is enforced by test
 |---|---|---|
 | **1** | Detection Agent, `/api/classify`, dataset generator, tests | ✅ Verified |
 | **2** | LangGraph orchestration, fraud graph, RAG advisory, reporting | ✅ Verified |
-| **3** | React dashboard: live session monitor + fraud network view | Next |
-| **4** | Metrics (precision/recall/F1/lead time), deployment | Planned |
+| **3** | React dashboard: live session monitor + fraud network view | ✅ Verified |
+| **4** | Metrics harness, curated eval set, deployment configs | ✅ Built |
 
 **Verified:** 84 offline tests passing · detection latency **1.8–2.5s** ·
 obvious scam → 98, obvious legitimate → 6 · full pipeline
-(`detect → graph → advisory → report`) runs end-to-end.
+(`detect → graph → advisory → report`) runs end-to-end · dashboard renders and
+drives the live backend.
 
-**Outstanding:** the 60-transcript synthetic dataset is generated but blocked on
-Groq quota (needs ~150k tokens against a 100k/day free-tier cap). The generator is
-verified working on a real sample.
+## Metrics
+
+The evaluation harness (`backend/scripts/evaluate.py`) computes precision, recall,
+F1, false-positive rate (reported separately on **hard negatives**), per-scam-type
+recall, and detection lead time, against a labeled set.
+
+Because a benchmark's value is trustworthy labels, evaluation runs on a **hand-curated**
+16-transcript set (`scripts/build_curated_dataset.py`) — every scam type, plus 5 hard
+negatives (a genuine bank fraud alert, a real delivery OTP, an overdue-EMI reminder)
+that a naive detector would false-positive on. It needs no API key, so anyone can
+reproduce it.
+
+**Rule-layer floor (LLM unavailable), verified:**
+
+| Metric | Value |
+|---|---|
+| Precision | **1.0** |
+| False-positive rate | **0.0** |
+| Hard-negative FPR | **0.0** |
+| Recall | 0.5 |
+
+The rule layer alone never false-positives — even on calls built to fool it — but
+misses subtler scams (loan, job, investment) that have no hard keyword signature.
+**That gap is the argument for the LLM layer**, which lifts recall on exactly those
+cases. Full-detector figures (rules + LLM) need Groq quota beyond the free-tier
+daily cap; run `evaluate.py` with a key configured, then `write_metrics_report.py`.
+
+> The 60-sample LLM-generated set from the original plan is superseded by the curated
+> set for benchmarking (trustworthy labels, zero cost). The generator still exists
+> (`scripts/generate_dataset.py`, verified on a real sample) for augmentation on Dev Tier.
+
+## Deployment
+
+- **Backend** → Render (`render.yaml` blueprint) or any container host
+  (`backend/Dockerfile`, verified to build cleanly). Cloud Run works with the same
+  image. Set `GROQ_API_KEY` in the host's env — never commit it.
+- **Frontend** → Vercel (`frontend/vercel.json`). Set `VITE_API_BASE` to the
+  deployed backend URL at build time.
+
+Both run in **degraded mode with no key**, so the dashboard is demoable without
+spending any Groq quota.
 
 ## Quick start
 

@@ -1,0 +1,26 @@
+# Render blueprint for the AntiScam AI backend.
+# Render is the fastest path to a live demo: connect the repo, and this file
+# provisions the service. Set GROQ_API_KEY in the dashboard (never commit it).
+services:
+  - type: web
+    name: antiscam-ai-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false          # set manually in the Render dashboard
+      - key: MODEL_NAME
+        value: llama-3.3-70b-versatile
+      - key: WARN_THRESHOLD
+        value: "50"
+      - key: URGENT_THRESHOLD
+        value: "75"
+      - key: RULE_WEIGHT
+        value: "0.25"
+      # Allow the deployed frontend. Update with your real Vercel URL, or use "*"
+      # for a quick demo (CORS wide open is fine for a public read-only demo API).
+      - key: CORS_ORIGINS
+        value: "*"

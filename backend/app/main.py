@@ -57,10 +57,15 @@ app = FastAPI(
 
 settings = get_settings()
 
+# CORS. A wildcard origin ("*") and allow_credentials=True are mutually exclusive
+# per the CORS spec — the browser rejects the combination. Since this API uses no
+# cookies or auth, we drop credentials when the deployment opts into a wildcard,
+# which is the common case for a public read-only demo API.
+_wildcard = "*" in settings.cors_origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_origins=["*"] if _wildcard else settings.cors_origins,
+    allow_credentials=not _wildcard,
     allow_methods=["*"],
     allow_headers=["*"],
 )
