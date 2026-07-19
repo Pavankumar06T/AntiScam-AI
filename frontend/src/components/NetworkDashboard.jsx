@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { api } from '../api';
 import { nodeColor, NODE_TYPE_LABELS, LINKABLE_TYPES, scamTypeLabel } from '../lib/risk';
+import GeoMap from './GeoMap';
 
 // Fraud Network Dashboard.
 //
@@ -12,6 +13,7 @@ import { nodeColor, NODE_TYPE_LABELS, LINKABLE_TYPES, scamTypeLabel } from '../l
 // glance; that connection is the entire differentiator of the project.
 
 export default function NetworkDashboard({ refreshKey }) {
+  const [subView, setSubView] = useState('graph'); // 'graph' | 'map'
   const [data, setData] = useState({ nodes: [], edges: [] });
   const [stats, setStats] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -92,11 +94,24 @@ export default function NetworkDashboard({ refreshKey }) {
     return shared(s) || shared(t);
   }, []);
 
+  const toggle = (
+    <div className="subview-toggle">
+      <button className={subView === 'graph' ? 'active' : ''} onClick={() => setSubView('graph')}>🕸 Network graph</button>
+      <button className={subView === 'map' ? 'active' : ''} onClick={() => setSubView('map')}>🗺 Geographic map</button>
+    </div>
+  );
+
+  if (subView === 'map') {
+    return <>{toggle}<GeoMap refreshKey={refreshKey} /></>;
+  }
+
   if (loading) {
-    return <div className="loading"><div className="spinner" /></div>;
+    return <>{toggle}<div className="loading"><div className="spinner" /></div></>;
   }
 
   return (
+    <>
+    {toggle}
     <div className="network">
       <div className="graph-canvas" ref={wrapRef}>
         <div className="graph-overlay-title">
@@ -256,5 +271,6 @@ export default function NetworkDashboard({ refreshKey }) {
 
       {error && <div className="err-toast" onClick={() => setError(null)}>Backend error: {error}</div>}
     </div>
+    </>
   );
 }

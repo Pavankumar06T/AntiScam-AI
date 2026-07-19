@@ -171,3 +171,34 @@ class GraphView(BaseModel):
     nodes: list[GraphNodeView]
     edges: list[GraphEdgeView]
     stats: GraphStats
+
+
+class GeoPoint(BaseModel):
+    """A victim session located on the map."""
+
+    session_id: str
+    city: str
+    lat: float
+    lon: float
+    scam_type: str
+    scam_probability: int
+    cluster_id: str | None = None
+
+
+class GeoLink(BaseModel):
+    """A cross-victim link between two located sessions (an arc on the map)."""
+
+    from_session: str
+    to_session: str
+    cluster_id: str | None = None
+    shared_type: str
+    shared_value: str
+
+
+class GeoView(BaseModel):
+    """Geographic view of the fraud network — victims placed on a map of India."""
+
+    points: list[GeoPoint]
+    links: list[GeoLink]
+    cities: int
+    clusters: int

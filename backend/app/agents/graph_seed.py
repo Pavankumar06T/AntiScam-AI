@@ -119,16 +119,35 @@ SEED_SESSIONS: list[dict] = [
 ]
 
 
+# Victim locations for the geospatial view. The digital-arrest cluster
+# (SEED-001/002/003) deliberately spans Mumbai → Delhi → Bengaluru: one operation
+# working victims across jurisdictions, which is exactly the cross-jurisdiction
+# fraud-campaign mapping the problem statement asks for. Coordinates are real city
+# centroids; the victim assignment is synthetic.
+SEED_LOCATIONS: dict[str, tuple[str, float, float]] = {
+    "SEED-001": ("Mumbai", 19.076, 72.877),
+    "SEED-002": ("New Delhi", 28.614, 77.209),
+    "SEED-003": ("Bengaluru", 12.972, 77.594),
+    "SEED-004": ("Kolkata", 22.573, 88.364),
+    "SEED-005": ("Chennai", 13.083, 80.271),
+    "SEED-006": ("Hyderabad", 17.385, 78.487),
+}
+
+
 def seed_graph(graph: FraudGraph, *, reset: bool = False) -> int:
     """Load the prior sessions. Returns the number seeded."""
     if reset:
         graph.reset()
     for record in SEED_SESSIONS:
+        city, lat, lon = SEED_LOCATIONS.get(record["session_id"], (None, None, None))
         graph.add_session(
             session_id=record["session_id"],
             entities=record["entities"],
             scam_type=record["scam_type"],
             scam_probability=record["scam_probability"],
             observed_at=record["observed_at"],
+            city=city,
+            lat=lat,
+            lon=lon,
         )
     return len(SEED_SESSIONS)

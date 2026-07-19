@@ -12,7 +12,13 @@ from app.agents.fraud_graph import get_graph
 from app.agents.graph_seed import seed_graph
 from app.config import get_settings
 from app.models.advisory_schemas import AdvisoryWarning, ComplaintPacket
-from app.models.graph_schemas import DisruptionPackage, GraphMatch, GraphStats, GraphView
+from app.models.graph_schemas import (
+    DisruptionPackage,
+    GeoView,
+    GraphMatch,
+    GraphStats,
+    GraphView,
+)
 from app.models.schemas import ClassifyResponse, Turn
 from app.orchestrator import process_session
 
@@ -109,6 +115,12 @@ def graph_entities() -> GraphView:
 @router.get("/graph/stats", response_model=GraphStats)
 def graph_stats() -> GraphStats:
     return get_graph().stats()
+
+
+@router.get("/graph/geo", response_model=GeoView)
+def graph_geo() -> GeoView:
+    """Geographic view: located victim sessions + cross-victim arcs for the map."""
+    return get_graph().geo()
 
 
 class SeedResponse(BaseModel):

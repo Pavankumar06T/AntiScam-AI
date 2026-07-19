@@ -47,6 +47,9 @@ from app.models.graph_schemas import (
     LINKABLE_TYPES,
     EntityLink,
     EntityType,
+    GeoLink,
+    GeoPoint,
+    GeoView,
     GraphEdgeView,
     GraphMatch,
     GraphNodeView,
@@ -106,6 +109,9 @@ class FraudGraph:
         scam_type: str,
         scam_probability: int,
         observed_at: str | None = None,
+        city: str | None = None,
+        lat: float | None = None,
+        lon: float | None = None,
     ) -> list[str]:
         """Add a flagged session and its identifiers. Returns new entity ids."""
         observed_at = observed_at or _now()
@@ -122,6 +128,9 @@ class FraudGraph:
                 observed_at=observed_at,
                 first_seen=observed_at,
                 last_seen=observed_at,
+                city=city,
+                lat=lat,
+                lon=lon,
             )
 
             for field, entity_type in _ENTITY_FIELD_TYPES.items():
@@ -372,6 +381,79 @@ class FraudGraph:
                 for u, v, d in self._g.edges(data=True)
             ]
             return GraphView(nodes=nodes, edges=edges, stats=self.stats())
+
+    def geo(self) -> GeoView:
+        """Geographic projection of the fraud network.
+
+        Returns located victim sessions plus the cross-victim links between them, so
+        the frontend can plot the operation on a map of India and draw arcs between
+        co-victim cities — surfacing that one operation spans multiple jurisdictions.
+        """
+        with self._lock:
+            # Stable cluster index per node (same ordering as elsewhere).
+            components = sorted(
+                nx.connected_components(self._g),
+                key=lambda c: (-len(c), min(c)),
+            )
+            cluster_of: dict[str, str] = {}
+            for i, comp in enumerate(components):
+                cid = f"CLUSTER-{i + 1:03d}"
+                for n in comp:
+                    cluster_of[n] = cid
+
+            points: list[GeoPoint] = []
+            for nid, data in self._g.nodes(data=True):
+                if data.get("type") != EntityType.SESSION.value:
+                    continue
+                if data.get("lat") is None or data.get("lon") is None:
+                    continue  # live sessions without a location are skipped
+                points.append(
+                    GeoPoint(
+                        session_id=data.get("value", nid),
+                        city=data.get("city") or "Unknown",
+                        lat=data["lat"],
+                        lon=data["lon"],
+                        scam_type=data.get("scam_type", "unknown"),
+                        scam_probability=data.get("scam_probability", 0),
+                        cluster_id=cluster_of.get(nid),
+                    )
+                )
+
+            # Links: sessions sharing a linkable identifier become an arc.
+            located = {
+                nid for nid, d in self._g.nodes(data=True)
+                if d.get("type") == EntityType.SESSION.value and d.get("lat") is not None
+            }
+            seen_pairs: set[tuple[str, str]] = set()
+            links: list[GeoLink] = []
+            for nid, data in self._g.nodes(data=True):
+                etype = data.get("type")
+                if etype in (EntityType.SESSION.value, EntityType.CLAIMED_NAME.value,
+                             EntityType.CLAIMED_DEPARTMENT.value):
+                    continue
+                sessions = sorted(
+                    n for n in self._g.neighbors(nid)
+                    if n in located
+                )
+                for a in range(len(sessions)):
+                    for b in range(a + 1, len(sessions)):
+                        pair = (sessions[a], sessions[b])
+                        if pair in seen_pairs:
+                            continue
+                        seen_pairs.add(pair)
+                        links.append(
+                            GeoLink(
+                                from_session=self._g.nodes[sessions[a]]["value"],
+                                to_session=self._g.nodes[sessions[b]]["value"],
+                                cluster_id=cluster_of.get(sessions[a]),
+                                shared_type=etype,
+                                shared_value=data.get("value", ""),
+                            )
+                        )
+
+            cities = len({p.city for p in points})
+            clusters = len({p.cluster_id for p in points if p.cluster_id})
+            return GeoView(points=points, links=links, cities=cities, clusters=clusters)
 
     def reset(self) -> None:
         with self._lock:

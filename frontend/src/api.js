@@ -52,5 +52,7 @@ export const api = {
 
   graphStats: () => request('/api/graph/stats'),
 
+  graphGeo: () => request('/api/graph/geo'),
+
   reseedGraph: () => request('/api/graph/seed', { method: 'POST' }),
 };

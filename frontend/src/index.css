@@ -487,6 +487,29 @@ h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.015em; }
 .tile-lbl { font-size: 10.5px; color: var(--text-faint); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
 .tile.alarm .tile-val { color: var(--risk-critical); }
 
+/* Fraud Network sub-view toggle — centered over the canvas (right panel is 360px) */
+.subview-toggle { position: absolute; top: 16px; left: calc((100% - 360px) / 2); transform: translateX(-50%); z-index: 8; display: flex; gap: 3px; padding: 3px; background: var(--glass); border: 1px solid var(--border); border-radius: 9px; backdrop-filter: blur(12px); box-shadow: var(--shadow); }
+.subview-toggle button { padding: 7px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 650; color: var(--text-dim); transition: all 0.15s; }
+.subview-toggle button:hover { color: var(--text); }
+.subview-toggle button.active { color: #fff; background: var(--accent-dim); box-shadow: inset 0 0 0 1px var(--accent); }
+
+/* Geographic map */
+.geo-canvas { display: grid; place-items: center; padding: 20px; }
+.geo-svg { width: 100%; height: 100%; max-width: 640px; }
+.geo-legend .legend-row span:not(.legend-dot) { display: inline-block; }
+.geo-arc { animation: geoDash 22s linear infinite; }
+@keyframes geoDash { to { stroke-dashoffset: -200; } }
+.geo-pulse { animation: geoPulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes geoPulse { 0%,100% { opacity: 0.12; transform: scale(1); } 50% { opacity: 0.28; transform: scale(1.5); } }
+.geo-city-label { fill: rgba(235,240,248,0.92); font: 700 12px var(--mono); }
+.geo-type-label { fill: var(--text-faint); font: 500 9px var(--font); text-transform: uppercase; letter-spacing: 0.03em; }
+.geo-marker:hover .geo-city-label { fill: #fff; }
+
+.geo-headline { margin-top: 14px; padding: 14px; border-radius: var(--radius-md); background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(249,115,22,0.05)); border: 1px solid rgba(239,68,68,0.35); }
+.geo-headline-title { font-size: 12.5px; font-weight: 800; color: #fca5a5; margin-bottom: 6px; }
+.geo-headline-body { font-size: 11.5px; line-height: 1.55; color: var(--text-dim); }
+.geo-headline-body strong { color: var(--text); }
+
 .node-detail { padding: 16px; background: var(--panel-2); border-radius: var(--radius); border: 1px solid var(--border); margin-top: 14px; animation: turnIn 0.3s ease; }
 .node-detail .nd-type { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; display: flex; align-items: center; gap: 7px; }
 .node-detail .nd-type .nd-dot { width: 10px; height: 10px; border-radius: 50%; }
