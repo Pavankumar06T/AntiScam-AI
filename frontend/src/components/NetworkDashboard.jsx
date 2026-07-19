@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { api } from '../api';
-import { nodeColor, NODE_TYPE_LABELS } from '../lib/risk';
+import { nodeColor, NODE_TYPE_LABELS, LINKABLE_TYPES, scamTypeLabel } from '../lib/risk';
 
 // Fraud Network Dashboard.
 //
-// Renders the backend fraud graph. Session nodes and identifier nodes share one
-// force layout; a cluster of connected nodes is one fraud operation across
-// multiple victims. Clicking a node shows its details and, for identifiers,
-// how many sessions it links.
+// Renders the backend fraud graph. Session nodes (victims) are the hubs; identifier
+// nodes hang off them. An identifier shared between two sessions is a cross-victim
+// link — the signal that this is one operation working many people. Shared
+// identifiers glow and carry flowing particles so the cross-victim links read at a
+// glance; that connection is the entire differentiator of the project.
 
 export default function NetworkDashboard({ refreshKey }) {
   const [data, setData] = useState({ nodes: [], edges: [] });
@@ -34,29 +35,26 @@ export default function NetworkDashboard({ refreshKey }) {
 
   useEffect(() => { load(); }, [load, refreshKey]);
 
-  // Spread the layout so distinct operations read as distinct clusters rather
-  // than one central blob. Stronger repulsion + longer links = more separation.
+  // Spread the layout so distinct operations read as distinct clusters rather than
+  // one central blob. Stronger repulsion + longer links = more separation.
   useEffect(() => {
     const fg = fgRef.current;
     if (!fg || data.nodes.length === 0) return;
-    fg.d3Force('charge')?.strength(-140);
-    fg.d3Force('link')?.distance(45);
+    fg.d3Force('charge')?.strength(-180);
+    fg.d3Force('link')?.distance(50);
     fg.d3ReheatSimulation?.();
   }, [data]);
 
   useEffect(() => {
     const measure = () => {
-      if (wrapRef.current) {
-        setDims({ w: wrapRef.current.clientWidth, h: wrapRef.current.clientHeight });
-      }
+      if (wrapRef.current) setDims({ w: wrapRef.current.clientWidth, h: wrapRef.current.clientHeight });
     };
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, [loading]);
 
-  // react-force-graph mutates the objects it's given; hand it fresh copies so
-  // React state stays clean across reloads.
+  // react-force-graph mutates the objects it's given; hand it fresh copies.
   const graphData = useMemo(
     () => ({
       nodes: data.nodes.map((n) => ({ ...n })),
@@ -67,6 +65,7 @@ export default function NetworkDashboard({ refreshKey }) {
 
   const reseed = useCallback(async () => {
     setLoading(true);
+    setSelected(null);
     try {
       await api.reseedGraph();
       await load();
@@ -81,9 +80,17 @@ export default function NetworkDashboard({ refreshKey }) {
       .filter((l) => (l.source.id || l.source) === selected.id || (l.target.id || l.target) === selected.id)
       .map((l) => {
         const other = (l.source.id || l.source) === selected.id ? l.target : l.source;
-        return other.id || other;
+        return (other.id || other);
       });
   }, [selected, graphData]);
+
+  // A link is a cross-victim link if either endpoint is a shared identifier.
+  const isCrossLink = useCallback((link) => {
+    const s = typeof link.source === 'object' ? link.source : null;
+    const t = typeof link.target === 'object' ? link.target : null;
+    const shared = (n) => n && n.type !== 'session' && (n.session_count || 0) > 1;
+    return shared(s) || shared(t);
+  }, []);
 
   if (loading) {
     return <div className="loading"><div className="spinner" /></div>;
@@ -92,6 +99,11 @@ export default function NetworkDashboard({ refreshKey }) {
   return (
     <div className="network">
       <div className="graph-canvas" ref={wrapRef}>
+        <div className="graph-overlay-title">
+          <h2>Fraud Network Intelligence</h2>
+          <p>Nodes shared between victim sessions are cross-victim links — the fingerprint of one organised operation.</p>
+        </div>
+
         {graphData.nodes.length > 0 ? (
           <ForceGraph2D
             ref={fgRef}
@@ -100,29 +112,68 @@ export default function NetworkDashboard({ refreshKey }) {
             graphData={graphData}
             backgroundColor="rgba(0,0,0,0)"
             nodeRelSize={5}
-            linkColor={() => 'rgba(120, 135, 165, 0.25)'}
-            linkWidth={1}
+            cooldownTicks={120}
+            linkColor={(l) => (isCrossLink(l) ? 'rgba(239, 68, 68, 0.45)' : 'rgba(120, 135, 165, 0.22)')}
+            linkWidth={(l) => (isCrossLink(l) ? 2 : 1)}
+            linkDirectionalParticles={(l) => (isCrossLink(l) ? 3 : 0)}
+            linkDirectionalParticleWidth={2.2}
+            linkDirectionalParticleColor={() => 'rgba(252, 165, 165, 0.9)'}
             onNodeClick={(n) => setSelected(n)}
+            onBackgroundClick={() => setSelected(null)}
             nodeCanvasObject={(node, ctx, scale) => {
               const isSession = node.type === 'session';
-              const r = isSession ? 7 : 4 + Math.min(node.session_count || 1, 4);
+              const shared = !isSession && (node.session_count || 0) > 1;
+              const isSel = selected?.id === node.id;
+              const r = isSession ? 8 : shared ? 5 + Math.min(node.session_count, 4) : 4;
+              const color = nodeColor(node.type);
+
+              // Glow: sessions and shared identifiers stand out.
+              if (isSession || shared || isSel) {
+                ctx.shadowColor = shared ? '#ef4444' : color;
+                ctx.shadowBlur = (shared ? 16 : 10) / Math.max(scale, 0.6);
+              }
               ctx.beginPath();
               ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
-              ctx.fillStyle = nodeColor(node.type);
+              ctx.fillStyle = color;
               ctx.fill();
-              if (selected?.id === node.id) {
-                ctx.strokeStyle = '#fff';
+              ctx.shadowBlur = 0;
+
+              // Session hubs get a ring; shared identifiers get a danger ring.
+              if (isSession) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+                ctx.lineWidth = 1.5 / scale;
+                ctx.stroke();
+              } else if (shared) {
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.9)';
                 ctx.lineWidth = 2 / scale;
                 ctx.stroke();
               }
-              // Label sessions and highly-shared identifiers only, to avoid clutter.
-              if (scale > 1.5 || isSession || (node.session_count || 0) > 1) {
-                const label = node.label.length > 18 ? node.label.slice(0, 16) + '…' : node.label;
-                ctx.font = `${11 / scale}px 'JetBrains Mono', monospace`;
-                ctx.fillStyle = 'rgba(230, 236, 245, 0.75)';
-                ctx.textAlign = 'center';
-                ctx.fillText(label, node.x, node.y + r + 9 / scale);
+              if (isSel) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, r + 3 / scale, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1.5 / scale;
+                ctx.stroke();
               }
+
+              // Label sessions and shared/zoomed identifiers.
+              if (scale > 1.6 || isSession || shared) {
+                const label = node.label.length > 18 ? node.label.slice(0, 16) + '…' : node.label;
+                ctx.font = `${isSession ? 700 : 500} ${10.5 / scale}px 'JetBrains Mono', monospace`;
+                ctx.fillStyle = isSession ? 'rgba(235, 240, 248, 0.95)' : 'rgba(210, 218, 232, 0.8)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.fillText(label, node.x, node.y + r + 3 / scale);
+              }
+            }}
+            nodePointerAreaPaint={(node, color, ctx) => {
+              const isSession = node.type === 'session';
+              const shared = !isSession && (node.session_count || 0) > 1;
+              const r = isSession ? 8 : shared ? 5 + Math.min(node.session_count, 4) : 4;
+              ctx.fillStyle = color;
+              ctx.beginPath();
+              ctx.arc(node.x, node.y, r + 3, 0, 2 * Math.PI);
+              ctx.fill();
             }}
           />
         ) : (
@@ -130,21 +181,30 @@ export default function NetworkDashboard({ refreshKey }) {
         )}
 
         <div className="graph-legend">
-          {Object.entries(NODE_TYPE_LABELS).map(([type, label]) => (
+          <div className="lt">Node types</div>
+          <div className="legend-row"><span className="legend-dot hub" /> Victim session <span className="lk" style={{ background: 'transparent', color: 'var(--text-faint)' }}>hub</span></div>
+          {['phone', 'upi', 'bank_account', 'case_number', 'url'].map((type) => (
             <div key={type} className="legend-row">
               <span className="legend-dot" style={{ background: nodeColor(type) }} />
-              {label}
+              {NODE_TYPE_LABELS[type]}
+              {LINKABLE_TYPES.has(type) && <span className="lk">links</span>}
+            </div>
+          ))}
+          {['claimed_name', 'claimed_department'].map((type) => (
+            <div key={type} className="legend-row" style={{ opacity: 0.65 }}>
+              <span className="legend-dot" style={{ background: nodeColor(type) }} />
+              {NODE_TYPE_LABELS[type]}
             </div>
           ))}
         </div>
       </div>
 
       <div className="graph-side">
-        <div className="section-title">Fraud Network</div>
+        <div className="section-title">Network Overview</div>
         {stats && (
           <div className="tiles">
             <div className="tile"><div className="tile-val">{stats.total_sessions}</div><div className="tile-lbl">Victim sessions</div></div>
-            <div className="tile"><div className="tile-val">{stats.clusters}</div><div className="tile-lbl">Operations</div></div>
+            <div className="tile alarm"><div className="tile-val">{stats.clusters}</div><div className="tile-lbl">Operations</div></div>
             <div className="tile"><div className="tile-val">{stats.total_entities}</div><div className="tile-lbl">Identifiers</div></div>
             <div className="tile"><div className="tile-val">{stats.total_links}</div><div className="tile-lbl">Links</div></div>
           </div>
@@ -158,35 +218,39 @@ export default function NetworkDashboard({ refreshKey }) {
 
         {selected ? (
           <div className="node-detail">
-            <div className="section-title" style={{ color: nodeColor(selected.type) }}>
+            <div className="nd-type" style={{ color: nodeColor(selected.type) }}>
+              <span className="nd-dot" style={{ background: nodeColor(selected.type) }} />
               {NODE_TYPE_LABELS[selected.type] || selected.type}
             </div>
             <h4>{selected.label}</h4>
+
             {selected.type === 'session' ? (
-              <div className="stack">
-                <div className="match-stat"><span>Scam type</span><span>{selected.scam_type || '—'}</span></div>
-                <div className="match-stat"><span>Risk score</span><span>{selected.scam_probability ?? '—'}</span></div>
+              <div className="nd-list">
+                <div className="nd-list-item">Scam type · {scamTypeLabel(selected.scam_type)}</div>
+                <div className="nd-list-item">Risk score · {selected.scam_probability ?? '—'}/100</div>
               </div>
             ) : (
               <>
-                <div className="match-stat"><span>Appears in</span><span>{linkedSessions.length} session(s)</span></div>
+                <div className="nd-list-item">Appears in {linkedSessions.length} session{linkedSessions.length === 1 ? '' : 's'}</div>
                 {linkedSessions.length > 1 && (
-                  <p className="subtle" style={{ marginTop: 8, color: 'var(--risk-warn)' }}>
-                    ⚠ Shared across multiple sessions — a cross-victim link.
-                  </p>
+                  <div className="nd-shared">
+                    ⚠ Shared across {linkedSessions.length} victim sessions — a cross-victim link tying these cases to one operation.
+                  </div>
                 )}
-                <div className="stack" style={{ marginTop: 8 }}>
+                <div className="nd-list">
                   {linkedSessions.map((s) => (
-                    <div key={s} className="subtle" style={{ fontFamily: 'var(--mono)' }}>
-                      {String(s).replace('session:', '')}
-                    </div>
+                    <div key={s} className="nd-list-item">{String(s).replace('session:', '')}</div>
                   ))}
                 </div>
               </>
             )}
           </div>
         ) : (
-          <p className="subtle">Click a node to inspect it. Nodes shared between sessions are the cross-victim links that reveal an organised operation.</p>
+          <p className="subtle">
+            Click a node to inspect it. The red, glowing nodes are identifiers shared
+            between multiple victims — the cross-victim links that expose an organised
+            operation rather than isolated incidents.
+          </p>
         )}
       </div>
 

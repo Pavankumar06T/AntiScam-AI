@@ -34,6 +34,20 @@ export const api = {
   processSession: (payload) =>
     request('/api/session/process', { method: 'POST', body: JSON.stringify(payload) }),
 
+  // Transcribe a recorded audio blob via Groq Whisper. Uses multipart, so it
+  // bypasses the JSON request() helper.
+  transcribe: async (blob, filename = 'clip.webm') => {
+    const form = new FormData();
+    form.append('audio', blob, filename);
+    const res = await fetch(`${API_BASE}/api/transcribe`, { method: 'POST', body: form });
+    if (!res.ok) {
+      let detail = `${res.status} ${res.statusText}`;
+      try { const b = await res.json(); if (b.detail) detail = b.detail; } catch { /* keep status */ }
+      throw new Error(detail);
+    }
+    return res.json();
+  },
+
   graphEntities: () => request('/api/graph/entities'),
 
   graphStats: () => request('/api/graph/stats'),

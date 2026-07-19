@@ -52,6 +52,32 @@ export const SAMPLE_TRANSCRIPTS = [
     ],
   },
   {
+    id: 'loan_fraud',
+    label: 'Loan Fraud — advance processing fee',
+    scamType: 'loan_fraud',
+    expectation: 'scam',
+    note: 'Instant loan, no documents — but pay a fee before disbursal.',
+    turns: [
+      { speaker: 'caller', text: 'Sir, congratulations, your instant personal loan of 5 lakh has been pre-approved at just 2% interest, no documents needed.', timestamp: '00:05' },
+      { speaker: 'user', text: 'That sounds very low. What is the catch?', timestamp: '00:12' },
+      { speaker: 'caller', text: 'No catch sir. Only a small refundable processing fee of Rs 4,999 is required to release the amount to your account today.', timestamp: '00:26' },
+      { speaker: 'caller', text: 'Please transfer it to our account, and also share the OTP I am sending to confirm your identity.', timestamp: '00:38' },
+    ],
+  },
+  {
+    id: 'investment_fraud',
+    label: 'Investment Fraud — guaranteed returns',
+    scamType: 'investment_fraud',
+    expectation: 'scam',
+    note: 'Guaranteed doubling via a trading group. No prior graph match.',
+    turns: [
+      { speaker: 'caller', text: 'Hello sir, this is Neha from Alpha Wealth Advisory. Our expert group is giving guaranteed 200% returns in 30 days.', timestamp: '00:06' },
+      { speaker: 'user', text: 'Guaranteed? How is that possible?', timestamp: '00:13' },
+      { speaker: 'caller', text: 'We have insider tips sir. Just start with Rs 50,000 on our trading app. Many members have already doubled their money.', timestamp: '00:27' },
+      { speaker: 'caller', text: 'Deposit today via UPI to alphawealth.pro@okhdfcbank and I will add you to the VIP group immediately.', timestamp: '00:41' },
+    ],
+  },
+  {
     id: 'legit_bank',
     label: 'Legitimate — bank fraud alert (hard negative)',
     scamType: 'none',
