@@ -188,8 +188,9 @@ PATTERNS: list[Pattern] = [
         RedFlagCategory.ADVANCE_FEE,
         20,
         Severity.HIGH,
-        r"\b(?:processing fee|registration fee|security deposit|clearance (?:fee|charge)|"
-        r"gst (?:charge|amount|fee)|customs duty|refundable (?:fee|deposit)|"
+        r"\b(?:processing fee|registration fee|security deposit|"
+        r"clearance (?:fee|charge|amount|of)|gst\s*(?:clearance|charge|amount|fee|of)|"
+        r"\d+\s*%\s*gst|customs duty|refundable (?:fee|deposit)|"
         r"(?:training[- ]?kit|registration|enrol?lment|activation|joining|membership) "
         r"(?:and [\w-]+ )?fee|one[- ]time fee|"
         r"pay (?:a |the )?(?:small )?(?:fee|amount) (?:to|for) (?:release|claim|process))\b",
@@ -200,11 +201,23 @@ PATTERNS: list[Pattern] = [
         RedFlagCategory.UNREALISTIC_REWARD,
         16,
         Severity.MEDIUM,
-        r"\b(?:you have won|lottery|lucky (?:draw|winner)|prize money|"
-        r"guaranteed (?:return|profit|income)s?|"
+        r"\b(?:you have won|have won|won \d|lottery|lucky (?:draw|winner)|prize money|"
+        r"\d+\s*%\s*(?:guaranteed\s*)?returns?|guaranteed (?:return|profit|income)s?|"
         r"double (?:your|their|his|her|the) (?:money|investment|amount)|"
-        r"work from home[^.\n]{0,30}\b(?:daily|per day|earn))\b",
+        r"work from home|part[- ]?time (?:job|work)[^.\n]{0,20}(?:earn|daily|income)|"
+        r"earn(?:ing)?\s+(?:up to\s+)?(?:rs\.?|₹|inr)?\s*[\d,]+\s*(?:daily|per day|a day|every ?day|per week|weekly))\b",
         "Reward that is too good to be true — the hook for prize/investment/job scams.",
+    ),
+    _p(
+        "guaranteed_returns",
+        RedFlagCategory.UNREALISTIC_REWARD,
+        24,
+        Severity.HIGH,
+        r"\b(?:guaranteed[^.\n]{0,18}(?:returns?|profits?|income|double)|assured returns?|"
+        r"insider (?:tips|information|trading)|double your (?:money|investment|capital)|"
+        r"(?:expert|wealth) (?:group|advisory)[^.\n]{0,25}(?:returns?|profits?|guarantee))",
+        "Guaranteed or assured high returns — a hallmark of investment fraud. No "
+        "legitimate investment can guarantee returns.",
     ),
     _p(
         "payment_rail",

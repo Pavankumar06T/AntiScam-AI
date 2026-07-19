@@ -232,9 +232,7 @@ class FraudGraph:
                 for s in sorted(linked_session_ids)
             ]
 
-            cluster_id, cluster_size, victims = self._cluster_for(
-                sid if sid in self._g else None, shared,
-            )
+            cluster_id, cluster_size, victims = self._cluster_for(sid, shared)
             confidence = max(link.strength for link in shared)
 
             return GraphMatch(
@@ -250,14 +248,24 @@ class FraudGraph:
             )
 
     def _cluster_for(
-        self, sid: str | None, shared: list[EntityLink]
+        self, current_sid: str | None, shared: list[EntityLink]
     ) -> tuple[str | None, int, int]:
-        """Identify the connected component this session belongs to."""
+        """Identify the connected component, counting only *other* victims.
+
+        The victim count deliberately excludes the querying session, so it reads the
+        same whether or not this call has been ingested yet: "this scammer has
+        already hit N *other* people." That keeps the number stable across replays
+        (a demo would otherwise drift 3→4 as the live session joins the cluster) and
+        is also the more honest claim — the current caller is the one being protected,
+        not counted among the prior victims.
+        """
+        # Anchor on a shared identifier (always in the graph); fall back to the
+        # session node only if it is already ingested.
         anchor = None
-        if sid and sid in self._g:
-            anchor = sid
-        elif shared:
+        if shared:
             anchor = shared[0].entity_id
+        elif current_sid and current_sid in self._g:
+            anchor = current_sid
         if anchor is None or anchor not in self._g:
             return None, 0, 0
 
@@ -271,13 +279,11 @@ class FraudGraph:
             nx.connected_components(self._g),
             key=lambda c: (-len(c), min(c)),
         )
-        index = next(
-            (i for i, c in enumerate(components) if anchor in c), 0
-        )
-        victims = len(sessions)
-        # +1 for the querying session when it isn't in the graph yet.
-        size = victims if sid and sid in self._g else victims + 1
-        return f"CLUSTER-{index + 1:03d}", size, victims
+        index = next((i for i, c in enumerate(components) if anchor in c), 0)
+
+        other_victims = len([s for s in sessions if s != current_sid])
+        total = other_victims + 1  # + the current caller being protected
+        return f"CLUSTER-{index + 1:03d}", total, other_victims
 
     def _summarize(
         self, shared: list[EntityLink], linked: list[LinkedSession], victims: int
