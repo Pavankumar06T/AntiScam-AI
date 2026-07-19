@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from './api';
 import SessionMonitor from './components/SessionMonitor';
 import NetworkDashboard from './components/NetworkDashboard';
+import { LogoMark } from './components/Logo';
 
 const LANGUAGES = [
   { code: 'en', label: 'EN' },
@@ -45,7 +46,7 @@ export default function App() {
 
       <header className="topbar">
         <div className="brand">
-          <div className="brand-mark">🛡</div>
+          <div className="brand-mark"><LogoMark /></div>
           <div>
             <div className="brand-name">AntiScam<span> AI</span></div>
             <div className="brand-sub">Fraud Interception Console</div>
