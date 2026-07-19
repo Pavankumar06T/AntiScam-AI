@@ -4,6 +4,7 @@ uvicorn[standard]>=0.30.0
 pydantic>=2.7.0
 groq>=1.5.0
 python-dotenv>=1.0.0
+python-multipart>=0.0.9   # audio file uploads for the voice endpoint
 pytest>=8.0.0
 httpx>=0.27.0
 

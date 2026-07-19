@@ -17,6 +17,7 @@ from app.agents.graph_seed import seed_graph
 from app.config import get_settings
 from app.routers import classify as classify_router
 from app.routers import session as session_router
+from app.routers import voice as voice_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -89,6 +90,7 @@ async def log_requests(request: Request, call_next):
 
 app.include_router(classify_router.router)
 app.include_router(session_router.router)
+app.include_router(voice_router.router)
 
 
 @app.get("/", include_in_schema=False)
