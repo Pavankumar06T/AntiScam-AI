@@ -7,10 +7,12 @@ import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field, model_validator
 
+from app.agents.disruption import build_disruption_package
 from app.agents.fraud_graph import get_graph
 from app.agents.graph_seed import seed_graph
+from app.config import get_settings
 from app.models.advisory_schemas import AdvisoryWarning, ComplaintPacket
-from app.models.graph_schemas import GraphMatch, GraphStats, GraphView
+from app.models.graph_schemas import DisruptionPackage, GraphMatch, GraphStats, GraphView
 from app.models.schemas import ClassifyResponse, Turn
 from app.orchestrator import process_session
 
@@ -46,6 +48,7 @@ class SessionProcessResponse(BaseModel):
     detection: ClassifyResponse
     graph_match: GraphMatch | None = None
     warning: AdvisoryWarning | None = None
+    disruption: DisruptionPackage | None = None
     complaint: ComplaintPacket | None = None
     complaint_text: str | None = Field(
         default=None, description="Human-readable rendering of the complaint draft."
@@ -71,14 +74,26 @@ def process(request: SessionProcessRequest) -> SessionProcessResponse:
         raise HTTPException(status_code=500, detail="Orchestration failed.") from exc
 
     complaint = state.get("complaint")
+    detection = state["detection"]
+    settings = get_settings()
+    disruption = build_disruption_package(
+        request.session_id,
+        detection,
+        state.get("graph_match"),
+        warn_threshold=settings.warn_threshold,
+        urgent_threshold=settings.urgent_threshold,
+    )
     logger.info(
-        "session/process id=%s path=%s", request.session_id, "->".join(state.get("path", []))
+        "session/process id=%s path=%s disruption=%s",
+        request.session_id, "->".join(state.get("path", [])),
+        disruption.package_id if disruption else "none",
     )
     return SessionProcessResponse(
         session_id=request.session_id,
-        detection=state["detection"],
+        detection=detection,
         graph_match=state.get("graph_match"),
         warning=state.get("warning"),
+        disruption=disruption,
         complaint=complaint,
         complaint_text=complaint.to_text() if complaint else None,
         path=state.get("path", []),

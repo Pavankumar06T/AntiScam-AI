@@ -7,6 +7,7 @@ The graph answers a question a single-conversation detector structurally cannot:
 from __future__ import annotations
 
 from enum import Enum
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -104,6 +105,36 @@ class GraphMatch(BaseModel):
     total_victims_in_cluster: int = Field(
         default=0, description="Distinct victim sessions linked to this operation."
     )
+
+
+class DisruptionAction(BaseModel):
+    """One recommended containment action against a scammer identifier."""
+
+    action: Literal["freeze", "block", "takedown"]
+    target_type: str  # bank_account, upi, phone, url
+    value: str
+    recipient: str  # who should action it
+    rationale: str
+    seen_in_sessions: int = 1
+
+
+class DisruptionPackage(BaseModel):
+    """A dispatch-ready containment packet — the 'disrupt' step.
+
+    Detection warns the victim; this proposes cutting the operation off at the
+    infrastructure — freezing the mule account, blocking the number — which, when
+    the identifier is shared across a cluster, protects every linked victim at once.
+    Deterministically assembled from captured identifiers so it is court-auditable.
+    """
+
+    package_id: str
+    generated_at: str
+    urgency: Literal["routine", "priority", "immediate"]
+    cluster_id: str | None = None
+    linked_victims: int = 0
+    actions: list[DisruptionAction] = Field(default_factory=list)
+    recipients: list[str] = Field(default_factory=list)
+    note: str
 
 
 class GraphStats(BaseModel):
