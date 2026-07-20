@@ -225,8 +225,8 @@ def main() -> int:
     settings = get_settings()
     if not settings.groq_configured:
         logger.error(
-            "GROQ_API_KEY is not set. Copy backend/.env.example to backend/.env and "
-            "add your key from https://console.groq.com/keys"
+            "GROQ_API_KEY is not set. Create backend/.env with "
+            "GROQ_API_KEY=<your key> from https://console.groq.com/keys"
         )
         return 1
 

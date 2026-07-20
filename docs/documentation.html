@@ -471,7 +471,7 @@ is configured.</p>
 <h4>Backend</h4>
 <p><code>cd backend</code> &middot; <code>python -m venv venv</code> &middot;
 <code>venv\Scripts\activate</code> &middot; <code>pip install -r requirements.txt</code> &middot;
-copy <code>.env.example</code> to <code>.env</code> and add your Groq key &middot;
+create <code>backend/.env</code> with your <code>GROQ_API_KEY</code> &middot;
 <code>uvicorn app.main:app --reload --port 8080</code></p>
 <h4>Frontend</h4>
 <p><code>cd frontend</code> &middot; <code>npm install</code> &middot; <code>npm run dev</code>

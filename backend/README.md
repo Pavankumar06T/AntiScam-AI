@@ -78,11 +78,16 @@ python -m venv venv
 venv\Scripts\activate          # Windows
 # source venv/bin/activate     # macOS/Linux
 pip install -r requirements.txt
-
-copy .env.example .env         # then paste your GROQ_API_KEY into .env
 ```
 
-`.env` is gitignored. No key is ever hardcoded.
+Create a file `backend/.env` with your key:
+
+```
+GROQ_API_KEY=your_key_here
+```
+
+Every other setting has a default — see the configuration table below to override
+them. `.env` is gitignored. No key is ever hardcoded.
 
 ### 3. Run
 
@@ -155,7 +160,6 @@ backend/
 │   ├── test_scam_detector.py    # offline: fusion, degradation (LLM stubbed)
 │   └── test_api.py              # contract + live Groq tests
 ├── requirements.txt
-├── .env.example
 └── pytest.ini
 ```
 

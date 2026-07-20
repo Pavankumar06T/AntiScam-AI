@@ -159,10 +159,16 @@ cd backend
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env
 ```
 
-Then open `backend\.env` and paste your key into `GROQ_API_KEY`.
+Then create a file `backend\.env` with your key:
+
+```
+GROQ_API_KEY=your_key_here
+```
+
+Everything else has sensible defaults. To override them, see the configuration
+table in [backend/README.md](backend/README.md).
 
 Frontend:
 
@@ -258,4 +264,5 @@ and API docs.
 ## Security
 
 No API keys are hardcoded anywhere. All secrets load from `.env`, which is
-gitignored. See `backend/.env.example` for required variables.
+gitignored. The only required variable is `GROQ_API_KEY`; the rest are listed
+with their defaults in [backend/README.md](backend/README.md).

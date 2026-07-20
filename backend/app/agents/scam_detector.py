@@ -76,8 +76,8 @@ def _get_client():
     settings = get_settings()
     if not settings.groq_configured:
         raise DetectionError(
-            "GROQ_API_KEY is not set. Copy .env.example to .env and add your key "
-            "from https://console.groq.com/keys"
+            "GROQ_API_KEY is not set. Create backend/.env with "
+            "GROQ_API_KEY=<your key> from https://console.groq.com/keys"
         )
     # max_retries=0 is deliberate. The SDK's default retry sleeps ~25s inside the
     # call when it hits a 429. In a live interception system a silent 25s stall is
