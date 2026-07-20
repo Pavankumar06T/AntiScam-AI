@@ -42,7 +42,7 @@ hallucinated phone number would poison cross-victim linking.
 
 ---
 
-## ⚠️ Groq free tier: 100,000 tokens per DAY
+## Groq free tier: 100,000 tokens per DAY
 
 The binding constraint on this project. Measured, not assumed:
 

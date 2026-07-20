@@ -48,10 +48,10 @@ Orchestrated with **LangGraph**. Four agents:
 
 | Agent | Role | Status |
 |---|---|---|
-| **Scam Pattern Detection** | Scores risk from language & dialogue dynamics | ✅ Verified |
-| **Fraud Network Graph** | Links entities across sessions (NetworkX) | ✅ Verified |
-| **Advisory (RAG)** | Regulation-backed warning, EN/HI/TA (ChromaDB) | ✅ Verified |
-| **Evidence & Reporting** | Structured complaint packet | ✅ Verified |
+| **Scam Pattern Detection** | Scores risk from language & dialogue dynamics | Verified |
+| **Fraud Network Graph** | Links entities across sessions (NetworkX) | Verified |
+| **Advisory (RAG)** | Regulation-backed warning, EN/HI/TA (ChromaDB) | Verified |
+| **Evidence & Reporting** | Structured complaint packet | Verified |
 
 Routing is conditional, not "run everything": most monitored calls are ordinary,
 and the graph/advisory/reporting agents only carry meaning once risk is real.
@@ -93,10 +93,10 @@ one meaningless cluster and name innocent people. That guard is enforced by test
 
 | Phase | Scope | Status |
 |---|---|---|
-| **1** | Detection Agent, `/api/classify`, dataset generator, tests | ✅ Verified |
-| **2** | LangGraph orchestration, fraud graph, RAG advisory, reporting | ✅ Verified |
-| **3** | React dashboard: live session monitor + fraud network view | ✅ Verified |
-| **4** | Metrics harness, curated eval set, deployment configs | ✅ Built |
+| **1** | Detection Agent, `/api/classify`, dataset generator, tests | Verified |
+| **2** | LangGraph orchestration, fraud graph, RAG advisory, reporting | Verified |
+| **3** | React dashboard: live session monitor + fraud network view | Verified |
+| **4** | Metrics harness, curated eval set, deployment configs | Built |
 
 **Verified:** 84 offline tests passing · detection latency **1.8–2.5s** ·
 obvious scam → 98, obvious legitimate → 6 · full pipeline

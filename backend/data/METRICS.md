@@ -5,7 +5,7 @@
 **Samples:** 16  
 **Dataset origin:** hand-authored  
 
-> ⚠️ **These are degraded-mode numbers.** They reflect the deterministic
+> **These are degraded-mode numbers.** They reflect the deterministic
 > rule layer *alone*, with the LLM unavailable. They are a floor, not the
 > product's performance — the LLM layer materially lifts recall on subtle
 > scams (loan, job, investment) that have no hard keyword signature. Run
