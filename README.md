@@ -35,13 +35,14 @@ This one builds **cross-victim intelligence**.
 
 ```mermaid
 graph LR
-    T[Transcript chunk] --> D[Detection Agent]
-    D -->|risk > threshold| G[Fraud Network<br/>Graph Agent]
-    D -->|risk <= threshold| M[Keep monitoring]
-    G --> A[Advisory Agent<br/>RAG]
-    A --> U[Warning delivered<br/>to user]
-    U -->|user confirms fraud| R[Evidence &<br/>Reporting Agent]
-    R --> C[NCRB-style<br/>complaint packet]
+    V["Voice clip<br/>Whisper"] --> D
+    T["Transcript chunk"] --> D["Detection Agent<br/>rules + LLM"]
+    D -->|"below threshold"| M["Keep monitoring"]
+    D -->|"above threshold"| G["Fraud Network<br/>Graph Agent"]
+    G --> A["Advisory Agent<br/>RAG"]
+    A --> U["Warning delivered<br/>to user"]
+    U -->|"user confirms fraud"| R["Evidence and<br/>Reporting Agent"]
+    R --> C["Complaint draft and<br/>disruption packet"]
 ```
 
 Orchestrated with **LangGraph**. Four agents:
