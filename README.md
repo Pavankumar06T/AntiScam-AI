@@ -145,21 +145,104 @@ daily cap; run `evaluate.py` with a key configured, then `write_metrics_report.p
 Both run in **degraded mode with no key**, so the dashboard is demoable without
 spending any Groq quota.
 
-## Quick start
+## Running the project
 
-```bash
+**Requirements:** Python 3.11+, Node 18+, and a free Groq API key from
+[console.groq.com/keys](https://console.groq.com/keys).
+
+### 1. One-time setup
+
+Backend:
+
+```powershell
 cd backend
-python -m venv venv && venv\Scripts\activate    # Windows
+python -m venv venv
+venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env                          # add your GROQ_API_KEY
-uvicorn app.main:app --reload
+copy .env.example .env
 ```
 
-Full setup, architecture rationale, and API docs: **[backend/README.md](backend/README.md)**
+Then open `backend\.env` and paste your key into `GROQ_API_KEY`.
 
-Get a Groq key at [console.groq.com/keys](https://console.groq.com/keys).
-Note the free tier caps at **100k tokens/day (~25 detection calls)** — see the
-backend README for the measured token budget.
+Frontend:
+
+```powershell
+cd frontend
+npm install
+```
+
+### 2. Start it (two terminals)
+
+The backend and frontend run at the same time, so keep both terminals open.
+
+**Terminal 1 — backend:**
+
+```powershell
+cd backend
+venv\Scripts\activate
+uvicorn app.main:app --reload --port 8080
+```
+
+Wait for `Application startup complete` and `Fraud graph seeded with 6 prior sessions`.
+
+**Terminal 2 — frontend:**
+
+```powershell
+cd frontend
+npm run dev
+```
+
+Then open **http://localhost:5173** in the browser. The status pill in the top-right
+should show `online`. Press `Ctrl+C` in each terminal to stop.
+
+### 3. Try it
+
+1. Pick **Digital Arrest — CBI impersonation** and hit **Play session**. The risk score
+   climbs turn by turn, the kill-chain lights up, and the repeat-scammer match appears
+   because that call reuses a mule account already in the graph.
+2. Hit **Confirm this was fraud** to generate the complaint draft and the disruption packet.
+3. Open the **Fraud Network** tab, then switch to **Geographic map** to see the same
+   operation running across Mumbai, Delhi and Bengaluru.
+4. Switch to **Live input** to record your own voice (or paste a line) and have it
+   transcribed and scored.
+5. For contrast, play **Legitimate — bank fraud alert**. It looks alarming but stays
+   green, which is the point.
+
+### Port already in use
+
+If the backend fails with `WinError 10013` or `address already in use`, that port is
+taken or reserved (Docker and Hyper-V reserve ranges on Windows). Start it on another
+port and point the frontend at it:
+
+```powershell
+uvicorn app.main:app --reload --port 8090
+```
+
+Then create `frontend\.env.local` with:
+
+```
+VITE_API_BASE=http://localhost:8090
+```
+
+Restart `npm run dev` afterwards so Vite picks up the change. To see what is holding a
+port: `netstat -ano | findstr :8080`.
+
+### Running the tests
+
+```powershell
+cd backend
+venv\Scripts\activate
+pytest -m "not live"      # offline only, no API key needed
+pytest                    # includes live Groq tests
+```
+
+### No API key?
+
+The system still runs. Detection falls back to the rule layer, so the dashboard is fully
+demoable without spending any Groq quota — the score just comes from patterns instead of
+the LLM. The free tier caps at **100k tokens/day (~25 detection calls)**; see
+[backend/README.md](backend/README.md) for the measured token budget, architecture notes
+and API docs.
 
 ## Known limitations
 
