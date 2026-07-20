@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AntiScam AI — Project Documentation</title>
+<style>
+  @page { size: A4; margin: 15mm 14mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: 'Segoe UI', -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #1b2333; line-height: 1.55; font-size: 10.3pt; margin: 0;
+  }
+  h1, h2, h3, h4 { color: #12203a; font-weight: 700; line-height: 1.2; page-break-after: avoid; }
+  h2 { font-size: 15.5pt; margin: 20px 0 9px; padding-bottom: 6px; border-bottom: 2px solid #e6eaf2; }
+  h2:first-of-type { margin-top: 0; }
+  h2 .n { color: #3b82f6; font-size: 11.5pt; margin-right: 8px; }
+  h3 { font-size: 11.5pt; margin: 14px 0 4px; color: #1d3a6b; }
+  h4 { font-size: 10.5pt; margin: 11px 0 2px; color: #2a3550; }
+  p { margin: 0 0 8px; }
+  a { color: #2563eb; text-decoration: none; }
+  strong { color: #12203a; }
+  code { font-family: 'Consolas', 'JetBrains Mono', monospace; font-size: 8.7pt; background: #f1f4f9; padding: 1px 5px; border-radius: 4px; color: #1d3a6b; }
+  ul, ol { margin: 4px 0 9px; padding-left: 20px; }
+  li { margin: 2.5px 0; }
+  .muted { color: #5b6577; }
+  .lead { font-size: 11pt; color: #33415c; }
+
+  figure, table, .callout, .stats, svg.arch { page-break-inside: avoid; }
+  .cover { height: 256mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; page-break-after: always; }
+  .badge { width: 92px; height: 92px; border-radius: 22px; background: linear-gradient(135deg, #3b82f6, #7c3aed); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(59,130,246,0.35); margin-bottom: 26px; }
+  .cover h1 { font-size: 40pt; letter-spacing: -1.5px; margin: 0; }
+  .cover h1 span { background: linear-gradient(135deg, #3b82f6, #7c3aed); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .cover .sub { font-size: 15pt; color: #33415c; font-weight: 600; margin: 12px 0 4px; }
+  .cover .tag { font-size: 12pt; color: #5b6577; font-style: italic; margin-bottom: 30px; }
+  .cover .meta { font-size: 11pt; color: #33415c; }
+  .cover .meta div { margin: 4px 0; }
+  .cover .chip { display: inline-block; background: #eef2fb; color: #2b4a8b; border: 1px solid #d6e0f5; padding: 5px 14px; border-radius: 20px; font-weight: 600; font-size: 10.5pt; margin-top: 6px; }
+  .author { margin-top: 26px; padding-top: 18px; border-top: 1px solid #e2e8f2; }
+  .author .by { font-size: 9pt; color: #8792a8; text-transform: uppercase; letter-spacing: 0.1em; }
+  .author .nm { font-size: 15pt; font-weight: 700; color: #12203a; margin-top: 3px; }
+  .author .id { font-size: 10pt; color: #5b6577; }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 9.3pt; }
+  th { background: #f2f5fb; text-align: left; padding: 6px 10px; border: 1px solid #e0e6f0; color: #1d3a6b; font-weight: 700; }
+  td { padding: 6px 10px; border: 1px solid #e6eaf2; vertical-align: top; }
+  tr:nth-child(even) td { background: #fafbfe; }
+  .ok { color: #15803d; font-weight: 700; }
+  .no { color: #b91c1c; font-weight: 700; }
+
+  .callout { background: #f5f8ff; border-left: 4px solid #3b82f6; padding: 10px 15px; border-radius: 0 8px 8px 0; margin: 11px 0; }
+  .callout.warn { background: #fff8f0; border-left-color: #f97316; }
+  .callout.crit { background: #fef4f4; border-left-color: #ef4444; }
+  .callout .t { font-weight: 700; color: #12203a; margin-bottom: 3px; }
+
+  .stats { display: flex; gap: 10px; margin: 12px 0; }
+  .stat { flex: 1; background: linear-gradient(135deg, #f5f8ff, #eef2fb); border: 1px solid #dfe7f5; border-radius: 10px; padding: 12px; text-align: center; }
+  .stat .v { font-size: 18pt; font-weight: 800; color: #2563eb; line-height: 1; }
+  .stat .l { font-size: 8.3pt; color: #5b6577; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .two { display: flex; gap: 16px; }
+  .two > div { flex: 1; }
+
+  .shot { width: 100%; border: 1px solid #dbe2ee; border-radius: 8px; margin: 6px 0 3px; box-shadow: 0 3px 10px rgba(20,40,80,0.08); }
+  .cap { font-size: 8.6pt; color: #5b6577; text-align: center; margin: 0 0 12px; }
+  .cap b { color: #2a3550; }
+  figure { margin: 0 0 6px; }
+
+  .arch { width: 100%; margin: 6px 0; }
+  .foot { margin-top: 14px; padding-top: 10px; border-top: 1px solid #e6eaf2; font-size: 8.5pt; color: #8792a8; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<div class="cover">
+  <div class="badge">
+    <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
+      <path d="M12 3 L19 5.8 V12.6 C19 16.4 16 19.3 12 20.9 C8 19.3 5 16.4 5 12.6 V5.8 Z" fill="rgba(255,255,255,0.16)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M7.2 12.3 H9.4 L10.7 8.9 L12.5 15.2 L13.8 11.4 L15 12.3 H16.9" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h1>AntiScam<span> AI</span></h1>
+  <div class="sub">Real-Time Digital Fraud Interception Platform</div>
+  <div class="tag">Intercepting conversational fraud — before the money moves.</div>
+  <div class="meta">
+    <div><strong>ET AI Hackathon 2026</strong></div>
+    <div>Problem 6 — AI for Digital Public Safety: Defeating Counterfeiting, Fraud &amp; Digital Arrest Scams</div>
+    <div class="chip">github.com/Pavankumar06T/AntiScam-AI</div>
+  </div>
+  <div class="author">
+    <div class="by">Submitted by</div>
+    <div class="nm">Pavankumar T</div>
+    <div class="id">pavankumart.aids2024 &middot; Project Documentation &middot; July 2026</div>
+  </div>
+</div>
+
+<!-- ===================== 1 EXEC SUMMARY ===================== -->
+<h2><span class="n">1</span>Executive Summary</h2>
+<p class="lead"><strong>AntiScam AI</strong> is a multi-agent AI platform that detects
+social-engineering scams — "digital arrest", KYC, lottery, loan, job and investment fraud —
+from a live call or chat transcript, and intervenes <em>while the call is still happening</em>.</p>
+<p>It scores scam risk continuously as a conversation unfolds, cross-references the caller's
+identifiers against a fraud-network graph to reveal a repeat scammer already working other
+victims, delivers a plain-language warning in the victim's language, and — on confirmation —
+auto-drafts a structured police complaint and a dispatch-ready containment order to freeze the
+mule account.</p>
+<p>The core insight driving the project: <strong>law enforcement lacks intelligence <em>before</em>
+mass victimisation, not after.</strong> Existing tools are forensic — they help once the
+complaint is filed and the money is gone. AntiScam AI operates at the point of contact, shifting
+fraud response from reactive investigation to proactive interception, and — critically — from
+treating each victim in isolation to mapping the organised network behind them.</p>
+<div class="stats">
+  <div class="stat"><div class="v">~2s</div><div class="l">Detection latency</div></div>
+  <div class="stat"><div class="v">0%</div><div class="l">False-positive rate*</div></div>
+  <div class="stat"><div class="v">84</div><div class="l">Automated tests</div></div>
+  <div class="stat"><div class="v">3</div><div class="l">Languages (EN/HI/TA)</div></div>
+</div>
+<p class="muted" style="font-size:8.5pt;">* On the hard-negative subset — legitimate calls
+engineered to look scam-like. See §12. This document describes each component of the system in
+detail, followed by the architecture, technology, results, and design rationale.</p>
+
+<!-- ===================== 2 PROBLEM ===================== -->
+<h2><span class="n">2</span>The Problem</h2>
+<p>India recorded <strong>1.14 million cybercrime complaints in 2023</strong>. "Digital arrest"
+scams — where fraudsters impersonate CBI, ED or Customs officers over a video call and
+psychologically hold victims hostage until they transfer money — defrauded citizens of
+<strong>over ₹1,776 crore in just the first nine months of 2024</strong>.</p>
+<h3>How the digital-arrest playbook works</h3>
+<p>The scam is not random; it follows a disciplined psychological script. A caller establishes a
+<strong>pretext</strong> (an intercepted parcel, a money-laundering case), <strong>asserts
+authority</strong> (a badge number, an FIR reference), <strong>induces fear</strong> (threats of
+arrest, a non-bailable warrant), <strong>isolates</strong> the victim (forbidding them from
+telling family, invoking the "Official Secrets Act"), and finally <strong>extracts</strong> money
+to a "safe" or "RBI verification" account. Victims comply because the pressure is relentless,
+the story is internally consistent, and they are cut off from anyone who could break the spell.</p>
+<p>These are not opportunistic crimes. They are <strong>industrialised operations</strong> run
+from fraud compounds, using spoofed numbers, AI-generated voices, fake government portals, and
+networks of mule bank accounts that move money within minutes — often across several victims and
+several cities at once.</p>
+<h3>Why current tools fall short</h3>
+<ul>
+  <li><strong>They act after the fact.</strong> Complaint portals and transaction-fraud systems
+  engage once money has already moved. By then the funds have been layered through mule accounts
+  and are effectively unrecoverable.</li>
+  <li><strong>They judge one conversation in isolation.</strong> They cannot see that the same
+  account or phone number is simultaneously working dozens of other victims — so each case is
+  investigated as if it were unique, and the operation behind it is never mapped.</li>
+  <li><strong>They don't reach the victim in the moment</strong> — during the call, when a
+  30-second, regulation-backed warning could stop the transfer entirely.</li>
+</ul>
+<div class="callout crit">
+  <div class="t">The gap AntiScam AI fills</div>
+  Intelligence <strong>before</strong> victimisation — detecting the scam from language and
+  dialogue in real time, linking scammers across victims into one network, and warning the target
+  before the extraction step.
+</div>
+
+<!-- ===================== 3 SOLUTION ===================== -->
+<h2><span class="n">3</span>Our Solution — Overview</h2>
+<p>AntiScam AI is a <strong>four-agent system</strong> orchestrated as a state machine. A
+transcript chunk flows through detection, and only if risk crosses a threshold does it fan out to
+the network, advisory and reporting agents — so ordinary calls cost almost nothing while genuine
+scams trigger the full response. Each agent is described in detail in the sections that follow.</p>
+<table>
+  <tr><th style="width:27%">Agent</th><th>Role</th><th style="width:20%">Core tech</th></tr>
+  <tr><td><strong>Scam Pattern Detection</strong></td><td>Scores scam risk (0–100) from language and dialogue dynamics; classifies scam type, red flags, escalation stage, and extracts scammer identifiers.</td><td>Rules + Groq LLM</td></tr>
+  <tr><td><strong>Fraud Network Graph</strong></td><td>Cross-references a session's identifiers against every prior one to detect a repeat scammer and surface the wider operation.</td><td>NetworkX</td></tr>
+  <tr><td><strong>Advisory (RAG)</strong></td><td>Retrieves relevant guidance and generates a plain-language, cited warning in English, Hindi or Tamil.</td><td>ChromaDB + LLM</td></tr>
+  <tr><td><strong>Evidence &amp; Reporting</strong></td><td>Assembles an NCRB-style complaint draft and a dispatch-ready disruption packet from confirmed-fraud sessions.</td><td>Deterministic + LLM</td></tr>
+</table>
+<p>The four map onto the verbs of the challenge statement: <strong>detect</strong> (detection),
+<strong>link</strong> and <strong>disrupt</strong> (graph + reporting), and <strong>respond</strong>
+(advisory). The orchestrator is a LangGraph graph with conditional edges, so the routing itself is
+part of the design rather than hard-coded control flow.</p>
+
+<!-- ===================== 4 DETECTION ===================== -->
+<h2><span class="n">4</span>Detection Methodology</h2>
+<p>The Detection Agent is the heart of the system, and it is deliberately <strong>two layers,
+fused</strong> rather than a single model call.</p>
+<h3>Layer 1 — deterministic rule tripwires</h3>
+<p>A curated lexicon of named coercion patterns is matched against the transcript in microseconds:
+authority impersonation, the "digital arrest" phrase, arrest threats, fabricated case references,
+isolation instructions, secrecy demands, the "safe/verification account" transfer, OTP/PIN
+requests, remote-access app installs, verification pretexts, advance fees, unrealistic rewards,
+guaranteed-return lures, and fast payment rails. Patterns include common Hindi/Hinglish
+transliterations, since real scam calls code-switch constantly. Each hit carries a weight; the
+weights are summed and passed through a <strong>saturating curve</strong> so that stacking many
+weak signals approaches — but never reaches — certainty, while two or three critical signals get
+most of the way there. No single unlucky keyword can max out the score.</p>
+<h3>Layer 2 — the Groq LLM judgement</h3>
+<p>The transcript is sent to <code>llama-3.3-70b-versatile</code> via Groq with a carefully
+engineered system prompt, four few-shot examples (including a legitimate call that <em>looks</em>
+alarming, as a false-positive control), JSON-mode output, a low temperature for consistency, and a
+fixed seed for reproducible scoring. The model returns the scam type, red flags with verbatim
+quotes, an escalation stage, a confidence, and reasoning.</p>
+<h3>Fusion, escalation stage, and identifiers</h3>
+<p>The two scores are fused as a weighted blend (LLM-dominant, ~75/25). The system also reports the
+highest <strong>escalation stage</strong> reached on the coercion script — no contact risk →
+pretext → authority → fear → isolation → extraction — which is what makes it possible to warn
+<em>before</em> the extraction step and to measure interception lead time. Scammer identifiers
+(phone, UPI, account, case number, URL, claimed name and department) are extracted
+<strong>deterministically by regex</strong>, never by the LLM, because a hallucinated account
+number would poison the fraud graph and any evidence packet.</p>
+<div class="callout">
+  <div class="t">Why fuse two layers?</div>
+  It buys four things: a <strong>latency floor</strong> (the UI moves before the LLM round-trip
+  lands); <strong>graceful degradation</strong> (if Groq is rate-limited or down, an obvious scam
+  still scores in the 90s on rules alone); <strong>explainability</strong> ("it matched these named
+  patterns" is auditable in a way "the model said 82" is not); and <strong>drift protection</strong>
+  (a prompt edit cannot silently erase a hard signal like "share your OTP").
+</div>
+
+<!-- ===================== 5 GRAPH ===================== -->
+<h2><span class="n">5</span>Fraud Network Graph</h2>
+<p>This agent is the project's key differentiator. A detector that reads one conversation can only
+ever say "this looks like a scam." A graph that remembers every prior flagged session can say
+something far more actionable: <em>"the account this caller wants you to pay was already used
+against two other people this week."</em></p>
+<h3>How it is built</h3>
+<p>Sessions and identifiers live in one <strong>bipartite graph</strong> (NetworkX): each session
+links to the identifiers seen in it, so two sessions sharing an identifier sit at distance two,
+and a connected component <em>is</em> a fraud operation spanning multiple victims. When a new
+session arrives it is cross-referenced against the graph <em>before</em> being ingested, so it can
+never match itself.</p>
+<h3>What it links on — and what it deliberately does not</h3>
+<p>Linking is restricted to identifiers that genuinely implicate a shared operator — phone, UPI,
+bank account, case number, URL — each with a strength weight (a reused mule account or UPI is
+near-conclusive; a reused case number is weaker). It <strong>never links on claimed name or
+department</strong>: thousands of unrelated scammers all say "CBI" and "Inspector Sharma", so
+linking on those would collapse the entire dataset into one meaningless cluster and risk naming
+innocent people. That guard is enforced by automated tests.</p>
+<p>The victim count reports only <em>other</em> victims (excluding the current caller, who is being
+protected rather than counted), so the number is stable and honest — "this scammer has already hit
+3 other people" — regardless of whether the live session has been ingested yet.</p>
+
+<!-- ===================== 6 ADVISORY ===================== -->
+<h2><span class="n">6</span>Advisory Agent (RAG)</h2>
+<p>The Advisory Agent is the only component the victim actually reads; everything else is
+instrumentation. When risk crosses the threshold it retrieves relevant guidance and generates a
+warning addressed directly to the person on the call.</p>
+<h3>Retrieval that costs nothing</h3>
+<p>A curated knowledge base of MHA/RBI-style scam advisories and statutory references is embedded in
+<strong>ChromaDB using local ONNX MiniLM embeddings</strong> — so retrieval runs entirely offline,
+costs zero API tokens, and stays available even when the LLM layer is rate-limited. Retrieval is
+semantic but biased toward advisories tagged for the detected scam type, so a digital-arrest victim
+reliably gets the "digital arrest is not real" advisory.</p>
+<h3>Multilingual, and resilient</h3>
+<p>The warning is generated in <strong>English, Hindi or Tamil</strong> with a decisive headline, a
+short plain-language body, numbered immediate actions, and a citation to the advisory it drew on. If
+the LLM is unavailable, the agent falls back to <strong>hand-written templates per language</strong>
+— never machine-translated, because a mistranslated safety instruction is worse than none. The
+warning gets blunter, not absent, precisely when the person needs it most.</p>
+
+<!-- ===================== 7 REPORTING + DISRUPT ===================== -->
+<h2><span class="n">7</span>Evidence, Reporting &amp; Disruption</h2>
+<p>Once a victim confirms the call was fraud, two artefacts are assembled.</p>
+<h3>The NCRB-style complaint draft</h3>
+<p>A victim files a complaint hours later, from memory, while distressed — and the details that let
+police act (the exact UPI ID, the account number, the precise words used, the timestamps) are
+exactly the details that evaporate under stress. The Reporting Agent captured them while the call
+was happening. The draft includes a chronological incident summary, suspect identifiers,
+<strong>timestamped red-flag excerpts</strong>, the fraud-cluster reference, illustrative statutory
+provisions (BNS 2023 / IT Act), and where to file (1930 / cybercrime.gov.in). Construction is
+mostly deterministic — only the prose summary is written by the LLM — so an invented account number
+can never end up in a police document.</p>
+<h3>The disruption packet — the "disrupt" step</h3>
+<p>Detection protects the person on this call; the disruption packet proposes cutting the operation
+off at the infrastructure. It is a dispatch-ready containment order — <strong>freeze the mule
+account, block the caller's number, take down the phishing URL</strong> — routed to the beneficiary
+bank / NPCI, the telecom operator / DoT (Sanchar Saathi), and CERT-In. Because the identifier is
+shared across a cluster, actioning it protects <em>every linked victim at once</em>. It is assembled
+deterministically from captured identifiers, carries a package id and timestamp, and is
+court-auditable.</p>
+<div class="callout warn">
+  <div class="t">Prototype boundary — stated honestly</div>
+  In this prototype the disruption packet is <strong>generated, not auto-dispatched</strong>: a
+  human operator would forward it to the bank/1930. In production it would be sent automatically via
+  bank/NPCI and DoT APIs. The value demonstrated here is the intelligence packaging and auditability.
+</div>
+
+<!-- ===================== 8 ARCHITECTURE ===================== -->
+<h2><span class="n">8</span>System Architecture</h2>
+<p>A LangGraph orchestrator routes each transcript through the agents with conditional branching —
+the graph, advisory and reporting agents only run once risk crosses the warning threshold. Live
+voice is transcribed by Groq Whisper before entering the same pipeline.</p>
+<svg class="arch" viewBox="0 0 700 606" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#8aa0c0"/></marker>
+    <linearGradient id="og" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#eaf1ff"/><stop offset="1" stop-color="#efeaff"/></linearGradient>
+  </defs>
+  <rect x="70" y="10" width="255" height="38" rx="8" fill="#fff" stroke="#c7d3e8" stroke-width="1.3"/>
+  <text x="197" y="30" text-anchor="middle" font-size="12" font-weight="600" fill="#1b2333">Live call / chat transcript</text>
+  <rect x="375" y="10" width="255" height="38" rx="8" fill="#fff" stroke="#c7d3e8" stroke-width="1.3"/>
+  <text x="502" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#1b2333">Voice clip</text>
+  <text x="502" y="40" text-anchor="middle" font-size="9" fill="#5b6577">Groq Whisper (whisper-large-v3)</text>
+  <line x1="197" y1="48" x2="330" y2="70" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <line x1="502" y1="48" x2="370" y2="70" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <rect x="95" y="70" width="510" height="34" rx="9" fill="url(#og)" stroke="#7c9bd6" stroke-width="1.4"/>
+  <text x="350" y="91" text-anchor="middle" font-size="12" font-weight="700" fill="#274a86">LangGraph Orchestrator &middot; conditional multi-agent routing</text>
+  <line x1="350" y1="104" x2="350" y2="126" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <rect x="150" y="126" width="400" height="104" rx="10" fill="#f5f8ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="350" y="144" text-anchor="middle" font-size="12" font-weight="700" fill="#12203a">1 &nbsp; Scam Pattern Detection Agent</text>
+  <rect x="172" y="154" width="150" height="34" rx="7" fill="#fff" stroke="#c7d3e8"/>
+  <text x="247" y="175" text-anchor="middle" font-size="10.5" fill="#1b2333">Rule tripwires</text>
+  <rect x="378" y="154" width="150" height="34" rx="7" fill="#fff" stroke="#c7d3e8"/>
+  <text x="453" y="171" text-anchor="middle" font-size="10.5" fill="#1b2333">Groq LLM</text>
+  <text x="453" y="183" text-anchor="middle" font-size="8" fill="#5b6577">llama-3.3-70b</text>
+  <line x1="247" y1="188" x2="330" y2="204" stroke="#8aa0c0" stroke-width="1.3" marker-end="url(#ar)"/>
+  <line x1="453" y1="188" x2="370" y2="204" stroke="#8aa0c0" stroke-width="1.3" marker-end="url(#ar)"/>
+  <text x="350" y="219" text-anchor="middle" font-size="9.5" font-weight="600" fill="#274a86">&#8594; fused risk score &middot; red flags &middot; escalation stage &middot; identifiers</text>
+  <line x1="350" y1="230" x2="350" y2="252" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <rect x="288" y="252" width="124" height="32" rx="16" fill="#fff8f0" stroke="#f0a44e" stroke-width="1.4"/>
+  <text x="350" y="272" text-anchor="middle" font-size="10.5" font-weight="600" fill="#8a5a12">Risk &#8805; threshold?</text>
+  <line x1="412" y1="268" x2="500" y2="268" stroke="#8aa0c0" stroke-width="1.3" marker-end="url(#ar)"/>
+  <text x="452" y="261" text-anchor="middle" font-size="8.5" fill="#5b6577">no</text>
+  <rect x="500" y="252" width="120" height="32" rx="8" fill="#f4f6fa" stroke="#c7d3e8"/>
+  <text x="560" y="272" text-anchor="middle" font-size="10" fill="#5b6577">Monitor &middot; end</text>
+  <text x="360" y="298" font-size="8.5" fill="#5b6577">yes</text>
+  <line x1="350" y1="284" x2="350" y2="306" stroke="#8aa0c0" stroke-width="1.4"/>
+  <line x1="140" y1="306" x2="560" y2="306" stroke="#8aa0c0" stroke-width="1.4"/>
+  <line x1="140" y1="306" x2="140" y2="322" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <line x1="350" y1="306" x2="350" y2="322" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <line x1="560" y1="306" x2="560" y2="322" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <rect x="40" y="322" width="200" height="56" rx="9" fill="#f7f9fd" stroke="#b9c6de" stroke-width="1.3"/>
+  <text x="140" y="343" text-anchor="middle" font-size="11" font-weight="700" fill="#12203a">2 &nbsp; Fraud Network Graph</text>
+  <text x="140" y="358" text-anchor="middle" font-size="8.5" fill="#5b6577">NetworkX &middot; cross-victim links</text>
+  <rect x="250" y="322" width="200" height="56" rx="9" fill="#f7f9fd" stroke="#b9c6de" stroke-width="1.3"/>
+  <text x="350" y="343" text-anchor="middle" font-size="11" font-weight="700" fill="#12203a">3 &nbsp; Advisory Agent (RAG)</text>
+  <text x="350" y="358" text-anchor="middle" font-size="8.5" fill="#5b6577">ChromaDB &middot; EN / HI / TA</text>
+  <rect x="460" y="322" width="200" height="56" rx="9" fill="#f7f9fd" stroke="#b9c6de" stroke-width="1.3"/>
+  <text x="560" y="343" text-anchor="middle" font-size="11" font-weight="700" fill="#12203a">4 &nbsp; Evidence &amp; Reporting</text>
+  <text x="560" y="358" text-anchor="middle" font-size="8.5" fill="#5b6577">deterministic assembly</text>
+  <line x1="140" y1="378" x2="140" y2="402" stroke="#8aa0c0" stroke-width="1.4"/>
+  <line x1="350" y1="378" x2="350" y2="402" stroke="#8aa0c0" stroke-width="1.4"/>
+  <line x1="560" y1="378" x2="560" y2="402" stroke="#8aa0c0" stroke-width="1.4"/>
+  <line x1="105" y1="402" x2="600" y2="402" stroke="#8aa0c0" stroke-width="1.4"/>
+  <line x1="105" y1="402" x2="105" y2="420" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <line x1="270" y1="402" x2="270" y2="420" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <line x1="435" y1="402" x2="435" y2="420" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <line x1="600" y1="402" x2="600" y2="420" stroke="#8aa0c0" stroke-width="1.4" marker-end="url(#ar)"/>
+  <rect x="30" y="420" width="150" height="54" rx="9" fill="#eefaf1" stroke="#7cc79b" stroke-width="1.3"/>
+  <text x="105" y="442" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15683a">Victim warning</text>
+  <text x="105" y="457" text-anchor="middle" font-size="8.5" fill="#4a7a5e">plain-language, cited</text>
+  <rect x="195" y="420" width="150" height="54" rx="9" fill="#eefaf1" stroke="#7cc79b" stroke-width="1.3"/>
+  <text x="270" y="442" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15683a">Disruption packet</text>
+  <text x="270" y="457" text-anchor="middle" font-size="8.5" fill="#4a7a5e">freeze / block / takedown</text>
+  <rect x="360" y="420" width="150" height="54" rx="9" fill="#eefaf1" stroke="#7cc79b" stroke-width="1.3"/>
+  <text x="435" y="442" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15683a">NCRB complaint</text>
+  <text x="435" y="457" text-anchor="middle" font-size="8.5" fill="#4a7a5e">timestamped evidence</text>
+  <rect x="525" y="420" width="150" height="54" rx="9" fill="#eefaf1" stroke="#7cc79b" stroke-width="1.3"/>
+  <text x="600" y="442" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15683a">Graph + geo map</text>
+  <text x="600" y="457" text-anchor="middle" font-size="8.5" fill="#4a7a5e">cross-jurisdiction view</text>
+</svg>
+
+<!-- ===================== 9 TECH ===================== -->
+<h2><span class="n">9</span>Technology Stack</h2>
+<table>
+  <tr><th style="width:22%">Layer</th><th>Technologies &amp; rationale</th></tr>
+  <tr><td><strong>Backend</strong></td><td>Python 3.12, FastAPI, Pydantic — typed schemas as the contract between agents, API and UI</td></tr>
+  <tr><td><strong>Orchestration</strong></td><td>LangGraph (multi-agent state machine) + LangChain — conditional routing is part of the design, not hard-coded control flow</td></tr>
+  <tr><td><strong>LLM</strong></td><td>Groq API — <code>llama-3.3-70b-versatile</code> (detection, advisory, reporting) chosen for speed; <code>whisper-large-v3</code> (voice)</td></tr>
+  <tr><td><strong>Retrieval (RAG)</strong></td><td>ChromaDB with local ONNX MiniLM embeddings — runs offline, zero token cost, resilient to rate limits</td></tr>
+  <tr><td><strong>Fraud graph</strong></td><td>NetworkX — in-memory bipartite session/identifier graph; connected components give clusters for free</td></tr>
+  <tr><td><strong>Frontend</strong></td><td>React 19, Vite, Recharts (risk timeline), react-force-graph-2d (network), custom SVG (geo map)</td></tr>
+  <tr><td><strong>Quality</strong></td><td>84 automated tests (pytest); a colorblind-validated data-visualisation palette</td></tr>
+</table>
+
+<!-- ===================== 10 IN ACTION ===================== -->
+<h2><span class="n">10</span>The System in Action</h2>
+<figure>
+  <img class="shot" src="img/monitor.png" alt="Live Session Monitor">
+  <div class="cap"><b>Live Session Monitor.</b> The digital-arrest call playing turn-by-turn: the
+  coercion kill-chain lit to Isolation, the risk gauge at 91 (Critical), the rule/AI/fused
+  breakdown, and the interception callout confirming the warning fired before any money was demanded.</div>
+</figure>
+<figure>
+  <img class="shot" src="img/disrupt.png" alt="Warning and Disruption packet">
+  <div class="cap"><b>Warning &amp; Disruption.</b> The victim-facing warning with numbered actions
+  grounded in cited advisories, and the dispatch-ready Disruption Package — freeze the mule account
+  (linked to 3 victims), routed to the bank fraud desk / NPCI.</div>
+</figure>
+<figure>
+  <img class="shot" src="img/network.png" alt="Fraud Network graph">
+  <div class="cap"><b>Fraud Network — Graph.</b> Victim sessions (hubs) linked through shared
+  identifiers. The glowing red nodes are mule accounts and numbers reused across victims — the
+  cross-victim links that expose one organised operation.</div>
+</figure>
+<figure>
+  <img class="shot" src="img/geomap.png" alt="Geographic threat map">
+  <div class="cap"><b>Fraud Network — Geographic Map.</b> Victims plotted by city with cross-victim
+  arcs. One digital-arrest operation is working Mumbai, New Delhi and Bengaluru with the same
+  identifiers — a coordinated, cross-jurisdiction campaign, not isolated local incidents.</div>
+</figure>
+
+<!-- ===================== 11 RUBRIC ===================== -->
+<h2><span class="n">11</span>Alignment with the Problem Statement</h2>
+<h3>Suggested build areas</h3>
+<table>
+  <tr><th style="width:52%">Area</th><th>Coverage</th></tr>
+  <tr><td>Digital Arrest Scam Detection &amp; Alerting</td><td class="ok">Core — deep</td></tr>
+  <tr><td>Fraud Network Graph Intelligence</td><td class="ok">Core — deep</td></tr>
+  <tr><td>Geospatial Crime Pattern Intelligence</td><td class="ok">Yes — command-centre map</td></tr>
+  <tr><td>Citizen Fraud Shield (multi-channel advisory)</td><td class="ok">Yes — EN/HI/TA warnings + guided reporting</td></tr>
+  <tr><td>Speech AI (voice input)</td><td class="ok">Yes — Groq Whisper transcription</td></tr>
+  <tr><td>Counterfeit Currency Identification</td><td class="no">Out of scope — a separate computer-vision track</td></tr>
+</table>
+<h3>Evaluation focus</h3>
+<table>
+  <tr><th style="width:46%">Judges measure</th><th>How AntiScam AI delivers</th></tr>
+  <tr><td>Digital-arrest detection precision &amp; recall</td><td>Fused rule+LLM detector; metrics harness reports both</td></tr>
+  <tr><td>Fraud-network lead time before mass victimisation</td><td>The interception lead-time is a headline feature</td></tr>
+  <tr><td>Very low false-positive rate for citizen tools</td><td>0% on hard-negative legitimate calls (§12)</td></tr>
+  <tr><td>Auditability for legal admissibility</td><td>Timestamped evidence + deterministic identifiers + complaint packet</td></tr>
+</table>
+<h3>Judging criteria</h3>
+<table>
+  <tr><th>Criterion</th><th style="width:12%">Weight</th><th>Our strength</th></tr>
+  <tr><td>Innovation</td><td>25%</td><td>Cross-victim graph, kill-chain, lead-time, disruption packets</td></tr>
+  <tr><td>Business Impact</td><td>25%</td><td>Directly addresses a ₹1,776 cr problem; protects networks, not just individuals</td></tr>
+  <tr><td>Technical Excellence</td><td>20%</td><td>Multi-agent orchestration, fused detector, 84 tests, honest degradation</td></tr>
+  <tr><td>Scalability</td><td>15%</td><td>Stateless agents, conditional routing, deploy-ready configs</td></tr>
+  <tr><td>User Experience</td><td>15%</td><td>Real-time console; plain-language, multilingual victim warnings</td></tr>
+</table>
+
+<!-- ===================== 12 METRICS ===================== -->
+<h2><span class="n">12</span>Performance &amp; Metrics</h2>
+<table>
+  <tr><th style="width:50%">Metric</th><th>Result</th></tr>
+  <tr><td>Detection latency (LLM path)</td><td>1.8 – 2.5 seconds</td></tr>
+  <tr><td>Obvious scam score</td><td>90+ / 100</td></tr>
+  <tr><td>Legitimate-call score</td><td>&lt; 10 / 100</td></tr>
+  <tr><td>Precision (rule-layer floor)</td><td>1.0</td></tr>
+  <tr><td>False-positive rate on hard negatives</td><td>0.0</td></tr>
+  <tr><td>Automated tests passing</td><td>84 / 84</td></tr>
+  <tr><td>Degraded-mode resilience</td><td>Full pipeline runs with the LLM offline</td></tr>
+</table>
+<p>Evaluation uses a hand-curated benchmark that deliberately includes <strong>hard negatives</strong>
+— legitimate calls engineered to look scam-like (a genuine bank fraud alert, a real delivery OTP, an
+overdue-EMI reminder, a recruiter). A detector that only handles easy negatives would report a
+flattering false-positive rate that means nothing; these are the cases that matter for a
+citizen-facing tool. The rule-layer floor is verified with zero external calls, so the numbers are
+reproducible by anyone; full rule+LLM figures are generated by the metrics harness when a Groq key
+is configured.</p>
+
+<!-- ===================== 13 DESIGN DECISIONS ===================== -->
+<h2><span class="n">13</span>Design Decisions &amp; Engineering Discipline</h2>
+<p>Several deliberate choices distinguish this from a demo that merely calls an LLM:</p>
+<ul>
+  <li><strong>Fail fast, don't stall.</strong> The Groq client is built with <code>max_retries=0</code>.
+  The SDK's default retry silently sleeps ~25 seconds inside a rate-limited call; in a real-time
+  interception system a silent stall is worse than an honest rule-only score, so the system degrades
+  to the rule layer in under 500&nbsp;ms and says so.</li>
+  <li><strong>Deterministic identifiers.</strong> Everything that becomes a graph node or a line in a
+  police complaint is extracted by regex, never by the model — because a hallucinated account number
+  would be actively harmful and would break cross-victim linking.</li>
+  <li><strong>One source of truth for thresholds.</strong> The warn/urgent thresholds live in
+  configuration, shared by the API, the orchestrator and the dashboard, so they can never disagree
+  about what "warning" means.</li>
+  <li><strong>No secrets in code.</strong> All keys load from the environment; <code>.env</code> is
+  gitignored and no key is hardcoded anywhere in the repository's history.</li>
+  <li><strong>Accessible visualisation.</strong> The fraud-graph node palette was validated for
+  colour-blindness rather than eyeballed, and risk is always shown with a text label, never colour
+  alone.</li>
+  <li><strong>84 automated tests</strong> cover the rule layer, the fusion and degradation logic, the
+  graph's linking and false-linking guards, the orchestrator's routing, and the API contract.</li>
+</ul>
+
+<!-- ===================== 14 RUN ===================== -->
+<h2><span class="n">14</span>Running the Project</h2>
+<h4>Backend</h4>
+<p><code>cd backend</code> &middot; <code>python -m venv venv</code> &middot;
+<code>venv\Scripts\activate</code> &middot; <code>pip install -r requirements.txt</code> &middot;
+copy <code>.env.example</code> to <code>.env</code> and add your Groq key &middot;
+<code>uvicorn app.main:app --reload --port 8080</code></p>
+<h4>Frontend</h4>
+<p><code>cd frontend</code> &middot; <code>npm install</code> &middot; <code>npm run dev</code>
+&middot; open <code>http://localhost:5173</code></p>
+<p class="muted">A Groq API key is free at console.groq.com. Without a key the system still runs in
+degraded (rule-only) mode, so the dashboard is demoable with zero quota.</p>
+<h4>Suggested demo path</h4>
+<ol>
+  <li>Play the <strong>Digital Arrest</strong> sample and watch the risk climb, the kill-chain light up, and the repeat-scammer match appear.</li>
+  <li>Confirm fraud to generate the complaint draft and the disruption packet.</li>
+  <li>Switch to <strong>Fraud Network → Geographic map</strong> to see the operation spanning cities.</li>
+  <li>Use <strong>Live input</strong> to speak a scam line and watch it transcribe and score in real time.</li>
+</ol>
+
+<!-- ===================== 15 LIMITATIONS ===================== -->
+<h2><span class="n">15</span>Limitations &amp; Future Work</h2>
+<div class="two">
+  <div>
+    <h3>Honest limitations</h3>
+    <ul>
+      <li><strong>Synthetic data.</strong> Transcripts and seed sessions are machine-generated and hand-authored; metrics reflect behaviour on this data, which is cleaner than reality.</li>
+      <li><strong>No live telecom integration.</strong> Calls are replayed or spoken into the demo, not tapped from a live line — the hard problem is systems integration, not the AI.</li>
+      <li><strong>Regulatory/legal content is illustrative.</strong> Advisory text and BNS/IT Act references are representative for a prototype, not verified legal advice.</li>
+      <li><strong>In-memory fraud graph.</strong> Production needs a persistent graph database and a legal basis for retaining this data.</li>
+      <li><strong>English-dominant</strong> detection, with common Hindi/Hinglish patterns covered.</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Roadmap to production</h3>
+    <ul>
+      <li>On-device or telecom-level speech-to-text for live call interception.</li>
+      <li>Automated dispatch of disruption packets to bank/NPCI and DoT APIs.</li>
+      <li>Persistent graph store (Neo4j) with privacy and retention controls.</li>
+      <li>Expansion to all 12 regional languages and additional scam typologies.</li>
+      <li>WhatsApp / IVR channels for citizen-initiated checks.</li>
+      <li>A learned rule layer to complement the hand-built lexicon.</li>
+    </ul>
+  </div>
+</div>
+<div class="foot">
+  AntiScam AI &middot; Pavankumar T (pavankumart.aids2024) &middot; ET AI Hackathon 2026<br>
+  github.com/Pavankumar06T/AntiScam-AI &middot; This document describes a hackathon prototype;
+  regulatory and legal references are illustrative and not verified legal advice.
+</div>
+
+</body>
+</html>
